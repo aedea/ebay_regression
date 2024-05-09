@@ -12,7 +12,7 @@ def wait_for_element_by_xpath(driver, xpath, timeout=13):
     # ! enter xpath to wait for the element to be loaded
     try:
         WebDriverWait(driver, timeout).until(
-            ec.presence_of_element_located((By.XPATH, xpath))
+            ec.visibility_of_element_located((By.XPATH, xpath))
         )
     except TimeoutException:
         print("!Timeout occurred: Element not found")
@@ -24,20 +24,20 @@ def compare_urls(driver, expected_url, name_of_element):
     # ! enter (expected url, name of element) to compare if current url is the expected one
     # ! also put the name of the element being tested
     current_url = driver.current_url
-#    WebDriverWait.until(expected_url == current_url)
-
     if current_url == expected_url:
         print(name_of_element, " has successfully opened\n***")
     else:
         print(name_of_element, " ! has NOT opened !\n***")
-    """
-    expected_url = "https://www.ebay.com/giftcards"
-    current_url = context.driver.current_url
-    if current_url == expected_url:
-        print("Gift Cards page has successfully opened\n***")
+
+
+def check_dropdown(driver, xpath, name_of_element):
+    # ! enter xpath for dropdown and the name
+    dropdown_exp = driver.find_element(By.XPATH, xpath)
+    aria_exp_value = dropdown_exp.get_attribute("aria-expanded")
+    if aria_exp_value == "true":
+        print(name_of_element, "has been expanded\n***")
     else:
-        print("Gift Cards page is not opened\n***")
-    """
+        print(name_of_element, "! has NOT expanded !\n***")
 
 
 @step('Open Chrome')
@@ -112,11 +112,14 @@ def click_add_to_cart_button(context):
     )
     context.add_to_cart_btn.click()
     print("Clicked 'Add to cart' button\n***")
+    wait_for_element_by_xpath(context.driver, "//div[@class='ux-layout-section__row']//span[text()='Go to cart']")
+    """
     context.wait.until(
         ec.visibility_of_element_located(
             (By.XPATH, "//div[@class='ux-layout-section__row']//span[text()='Go to cart']")
         )
     )
+    """
     print("Lightbox has opened, 'Go to cart' button is shown\n***")
 
 
@@ -135,7 +138,7 @@ def click_go_to_cart(context):
     print("Cart is opened\n***")
 
 
-@step('Item was added to the cart')
+@step('Verify the item was added to the cart')
 def click_sell_button(context):
     try:
         context.wait.until(
@@ -220,14 +223,6 @@ def click_gift_cards(context):
     context.gift_cards_btn.click()
     print("Clicked 'Gift Cards' button\n***")
     compare_urls(context.driver, "https://www.ebay.com/giftcards", "Gift Cards page")
-    """
-    expected_url = "https://www.ebay.com/giftcards"
-    current_url = context.driver.current_url
-    if current_url == expected_url:
-        print("Gift Cards page has successfully opened\n***")
-    else:
-        print("Gift Cards page is not opened\n***")
-    """
 
 
 @step('Click "Help & Contact" and verify help and contact page has opened')
@@ -256,12 +251,7 @@ def click_watchlist(context):
     context.watchlist_btn.click()
     print("Clicked 'Watchlist' button\n***")
     wait_for_element_by_xpath(context.driver, "//div[@class='rvi__title']")
-    dropdown_exp = context.driver.find_element(By.XPATH, "//a[text()='Expand Watch List']")
-    aria_exp_value = dropdown_exp.get_attribute("aria-expanded")
-    if aria_exp_value == "true":
-        print("Watch List dropdown has been expanded\n***")
-    else:
-        print("Watch List dropdown is not expanded\n***")
+    check_dropdown(context.driver, "//a[text()='Expand Watch List']", "Watch List dropdown")
 
 
 @step('Hover over "My eBay" and verify my ebay dropdown menu has opened')
@@ -270,12 +260,7 @@ def hover_my_ebay(context):
     context.actions.move_to_element(my_ebay_dd).perform()
     print("Hovered over My eBay dropdown\n***")
     wait_for_element_by_xpath(context.driver, "//ul[@id='gh-ul-nav']/li/a[contains(text(),'Summary')]")
-    dropdown_exp = context.driver.find_element(By.XPATH, "//a[text()='Expand My eBay']")
-    aria_exp_value = dropdown_exp.get_attribute("aria-expanded")
-    if aria_exp_value == "true":
-        print("My eBay dropdown has been expanded\n***")
-    else:
-        print("My eBay dropdown is not expanded\n***")
+    check_dropdown(context.driver, "//a[text()='Expand My eBay']", "My eBay dropdown")
 
 
 @step('Hover over notification icon and verify notifications have opened')
@@ -283,12 +268,8 @@ def hover_notification(context):
     context.notifications_icon = context.driver.find_element(By.XPATH, "//i[@id='gh-Alerts-i']//parent::button")
     context.actions.move_to_element(context.notifications_icon).perform()
     print("Hovered over notifications icon\n***")
-    wait_for_element_by_xpath(context.driver, "//ul[@id='gh-ul-nav']/li/a[contains(text(),'Summary')]")
-    aria_exp_value = context.notifications_icon.get_attribute("aria-expanded")
-    if aria_exp_value == "true":
-        print("Notifications have been opened\n***")
-    else:
-        print("Notifications have NOT been opened\n***")
+    wait_for_element_by_xpath(context.driver, "//span[@class='ghn-errb ghn-errb-a']/a/span")
+    check_dropdown(context.driver, "//i[@id='gh-Alerts-i']//parent::button", "Notifications")
 
 
 @step('Click on cart icon and verify cart page has opened')
