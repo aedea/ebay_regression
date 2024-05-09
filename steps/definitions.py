@@ -15,9 +15,9 @@ def wait_for_element_by_xpath(driver, xpath, timeout=13):
             ec.visibility_of_element_located((By.XPATH, xpath))
         )
     except TimeoutException:
-        print("!Timeout occurred: Element not found")
+        print("\033[91m !Timeout occurred: Element not found\033[0m")
     except Exception as e:
-        print("!An error occurred:", e)
+        print("\033[91m !An error occurred:\033[0m", e)
 
 
 def compare_urls(driver, expected_url, name_of_element):
@@ -27,7 +27,7 @@ def compare_urls(driver, expected_url, name_of_element):
     if current_url == expected_url:
         print(name_of_element, " has successfully opened\n***")
     else:
-        print(name_of_element, " ! has NOT opened !\n***")
+        print("\033[91m", name_of_element, "has NOT opened !\033[0m\n***")
 
 
 def check_dropdown(driver, xpath, name_of_element):
@@ -37,7 +37,7 @@ def check_dropdown(driver, xpath, name_of_element):
     if aria_exp_value == "true":
         print(name_of_element, "has been expanded\n***")
     else:
-        print(name_of_element, "! has NOT expanded !\n***")
+        print("\033[91m", name_of_element, "has NOT expanded !\033[0m\n***")
 
 
 @step('Open Chrome')
@@ -74,6 +74,7 @@ def click_search_button(context):
             (By.XPATH, "(//div[@class='s-item__image-wrapper image-treatment'])[2]")
         )
     )
+    print("Page has loaded")
 
 
 @step('Click on the first dress')
@@ -199,11 +200,9 @@ def click_daily_deals(context):
 
 @step('Click "Brand Outlet" and verify Brand Outlet page has opened')
 def click_brand_outlet(context):
-    context.brand_outlet_btn = context.driver.find_element(
-        By.XPATH, "//a[contains(text(), 'Brand Outlet') and @class='gh-p']"
-    )
-    context.brand_outlet_btn.click()
-    print("Clicked 'Brand Outlet' button\n***")
+    context.brand_outlet_link = context.driver.find_element(By.XPATH, "//li[@id='gh-p-4']/a")
+    context.brand_outlet_link.click()
+    print("Clicked 'Brand Outlet' link\n***")
     try:
         context.wait.until(
             ec.presence_of_element_located((By.XPATH, "//a[@class='seo-breadcrumb-text']/span[text()='Brand Outlet']"))
@@ -232,6 +231,7 @@ def click_help(context):
     )
     context.help_contact_btn.click()
     print("Clicked 'Help & Contact' button\n***")
+    wait_for_element_by_xpath(context.driver, "//a[@aria-current='location' and text()='Customer Service']")
     compare_urls(context.driver, "https://www.ebay.com/help/home", "Help & Contact page")
 
 
@@ -278,4 +278,4 @@ def verify_cart(context):
     cart_icon.click()
     print("Clicked on cart icon\n***")
     wait_for_element_by_xpath(context.driver, "//h1[@data-test-id='main-title' and text()='Shopping cart']")
-    compare_urls(context.driver, "https://cart.ebay.com/", "Cart")
+    compare_urls(context.driver, "https://cart.ebay.com/", "Cart page")
