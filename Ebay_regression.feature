@@ -24,13 +24,12 @@ Feature: eBay regression
     Then  Click "Brand Outlet" and verify Brand Outlet page has opened
     Then  Navigate to eBay.com
     """
-    Then  Click "Gift Cards" and verify gift cards page has opened
-    Then  Navigate to eBay.com
-    Then  Click "Help & Contact" and verify help and contact page has opened
-    Then  Navigate to eBay.com
-    Then  Click "Sell" and verify sell page has opened
-    Then  Navigate to eBay.com
-    """
+#    Then  Click "Gift Cards" and verify gift cards page has opened
+#    Then  Navigate to eBay.com
+#    Then  Click "Help & Contact" and verify help and contact page has opened
+#    Then  Navigate to eBay.com
+#    Then  Click "Sell" and verify sell page has opened
+#    Then  Navigate to eBay.com
     Then  Click "Watchlist" and verify watchlist dropped down
     Then  Navigate to eBay.com
     Then  Hover over "My eBay" and verify my ebay dropdown menu has opened
