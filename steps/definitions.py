@@ -31,6 +31,7 @@ def compare_urls(driver, expected_url, name_of_element):
     else:
         print(name_of_element, " ! has NOT opened !\n***")
     """
+    !!!
     expected_url = "https://www.ebay.com/giftcards"
     current_url = context.driver.current_url
     if current_url == expected_url:
