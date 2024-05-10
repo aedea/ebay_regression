@@ -40,6 +40,13 @@ def check_dropdown(driver, xpath, name_of_element):
         print("\033[91m", name_of_element, "has NOT expanded !\033[0m\n***")
 
 
+def attribute_to_be(locator, attribute, value):
+    def _wait(driver):
+        element = driver.find_element(*locator)
+        return element.get_attribute(attribute) == value
+    return _wait
+
+
 @step('Open Chrome')
 def open_chrome(context):
     context.driver = webdriver.Chrome()
@@ -256,18 +263,17 @@ def click_watchlist(context, link):
 @step('Verify {dropdown_element} dropdown')
 def verify_dropdown_element(context, dropdown_element):
     # WORK ON LINE 259, wait should be changed depending on dropdown
-#    wait_for_element_by_xpath(context.driver, "//div[@class='rvi__title']")
+#   wait_for_element_by_xpath(context.driver, "//div[@class='rvi__title']")
     try:
         context.wait.until(
-            ec.attribute_to_be(
-                (By.XPATH, f"//*[contains(@class,'gh-') and text() = '{dropdown_element}']/following-sibling::a[@aria-expanded]"),
-            "aria-expanded", "true"))
+            attribute_to_be(
+                (By.XPATH, f"//*[contains(@class,'gh-') and text() = '{dropdown_element}']/following-sibling::a[@aria-expanded]"), "aria-expanded", "true"))
         print(dropdown_element, "has successfully opened\n***")
     except TimeoutException:
         print("Timeout\n**")
     except Exception as e:
         print(e)
-
+"""
     dropdown_exp = context.driver.find_element(
         By.XPATH, f"//*[contains(@class,'gh-') and text() = '{dropdown_element}']/following-sibling::a[@aria-expanded]"
     )
@@ -276,7 +282,7 @@ def verify_dropdown_element(context, dropdown_element):
         print(dropdown_element, "has been expanded\n***")
     else:
         print("\033[91m", dropdown_element, "has NOT expanded !\033[0m\n***")
-
+"""
 #    check_dropdown(context.driver,f"//*[contains(@class,'gh-') and text() = '{dropdown_element}']/following-sibling::a[@aria-expanded]")
 #    //*[contains(@class,'gh-') and text() = 'Watchlist']/following-sibling::a[@aria-expanded]
 #    check_dropdown(context.driver, "//a[text()='Expand Watch List']", "Watch List dropdown")
