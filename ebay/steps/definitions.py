@@ -153,6 +153,7 @@ def click_sell_button(context):
     context.driver.quit()
 
 
+# 2nd test
 @step('Click "Sign in" and and verify sign in page is opened')
 def click_sign_in(context):
     context.sign_in_btn = context.driver.find_element(By.XPATH, "//span[@id='gh-ug']/a[text()='Sign in']")
@@ -243,15 +244,42 @@ def click_sell(context):
     compare_urls(context.driver, "https://www.ebay.com/sl/sell", "Sell page")
 
 
-@step('Click "Watchlist" and verify watchlist dropped down')
-def click_watchlist(context):
+@step('Click {link} link')
+def click_watchlist(context, link):
     context.watchlist_btn = context.driver.find_element(
-        By.XPATH, "//a[contains(text(),'Watchlist') and @title='Watchlist']"
+        By.XPATH, f"//*[contains(@class,'gh-') and text() = '{link}']"
     )
     context.watchlist_btn.click()
-    print("Clicked 'Watchlist' button\n***")
-    wait_for_element_by_xpath(context.driver, "//div[@class='rvi__title']")
-    check_dropdown(context.driver, "//a[text()='Expand Watch List']", "Watch List dropdown")
+    print("Clicked", link, "link\n***")
+
+
+@step('Verify {dropdown_element} dropdown')
+def verify_dropdown_element(context, dropdown_element):
+    # WORK ON LINE 259, wait should be changed depending on dropdown
+#    wait_for_element_by_xpath(context.driver, "//div[@class='rvi__title']")
+    try:
+        context.wait.until(
+            ec.attribute_to_be(
+                (By.XPATH, f"//*[contains(@class,'gh-') and text() = '{dropdown_element}']/following-sibling::a[@aria-expanded]"),
+            "aria-expanded", "true"))
+        print(dropdown_element, "has successfully opened\n***")
+    except TimeoutException:
+        print("Timeout\n**")
+    except Exception as e:
+        print(e)
+
+    dropdown_exp = context.driver.find_element(
+        By.XPATH, f"//*[contains(@class,'gh-') and text() = '{dropdown_element}']/following-sibling::a[@aria-expanded]"
+    )
+    aria_exp_value = dropdown_exp.get_attribute("aria-expanded")
+    if aria_exp_value == "true":
+        print(dropdown_element, "has been expanded\n***")
+    else:
+        print("\033[91m", dropdown_element, "has NOT expanded !\033[0m\n***")
+
+#    check_dropdown(context.driver,f"//*[contains(@class,'gh-') and text() = '{dropdown_element}']/following-sibling::a[@aria-expanded]")
+#    //*[contains(@class,'gh-') and text() = 'Watchlist']/following-sibling::a[@aria-expanded]
+#    check_dropdown(context.driver, "//a[text()='Expand Watch List']", "Watch List dropdown")
 
 
 @step('Hover over "My eBay" and verify my ebay dropdown menu has opened')
