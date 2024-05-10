@@ -121,7 +121,7 @@ def click_add_to_cart_button(context):
         )
     )
     """
-    print("Lightbox has opened, 'Go to cart' button is shown\n***")
+    print("Lightbox has opened\n***")
 
 
 @step('Click "Go to cart"')
