@@ -27,10 +27,11 @@ Feature: eBay regression
     Then  Navigate to eBay.com
     Then  Click "Help & Contact" and verify help and contact page has opened
     Then  Navigate to eBay.com
-    Then  Click "Sell" and verify sell page has opened
-    Then  Navigate to eBay.com
     """
-    Then  Click Watchlist link
+    Then  Click on "Sell"
+    And   Verify "Sell" page has opened. Expected url: "https://www.ebay.com/sl/sell"
+    Then  Navigate to eBay.com
+    Then  Click on "Watchlist"
     And   Verify Watchlist dropdown
     Then  Navigate to eBay.com
     Then  Hover over My eBay element
@@ -39,6 +40,5 @@ Feature: eBay regression
     Then  Hover over Notification element
     And   Verify Notification dropdown
     Then  Navigate to eBay.com
-    """
-    Then  Click on cart icon and verify cart page has opened
-    """
+    Then  Click on cart icon
+    And   Verify "Cart" page has opened. Expected url: "https://cart.ebay.com/"

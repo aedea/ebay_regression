@@ -23,8 +23,8 @@ def wait_for_element_by_xpath(driver, xpath, timeout=13):
 def compare_urls(driver, expected_url, name_of_element):
     # ! enter (expected url, name of element) to compare if current url is the expected one
     # ! also put the name of the element being tested
-    current_url = driver.current_url
-    if current_url == expected_url:
+    # current_url = driver.current_url
+    if driver.current_url == expected_url:
         print("✅", name_of_element, " has successfully opened\n***")
     else:
         print("\033[91m❌", name_of_element, "has NOT opened !\033[0m\n***")
@@ -253,13 +253,31 @@ def click_sell(context):
     compare_urls(context.driver, "https://www.ebay.com/sl/sell", "Sell page")
 
 
-@step('Click {link} link')
+@step('Verify "{page}" page has opened. Expected url: "{expected_url}"')
+def compare_urls(context, page, expected_url):
+    # ! enter name of the page & expected url to compare if current url is the expected one
+    try:
+        context.wait.until(lambda driver: driver.current_url == expected_url)
+        print("✅", page, "page has successfully opened\n***")
+    except TimeoutException:
+        print("Timeout\n**")
+    except Exception as e:
+        print(e)
+    """
+    if context.driver.current_url == expected_url:
+        print("✅", page, "page has successfully opened\n***")
+    else:
+        print("\033[91m❌", page, "page has NOT opened !\033[0m\n***")
+    """
+
+
+@step('Click on "{link}"')
 def click_header_link(context, link):
     header_link = context.driver.find_element(
-        By.XPATH, f"//*[contains(@class,'gh-') and text() = '{link}']"
+        By.XPATH, f"//*[contains(@class,'gh-') and contains(text(), '{link}')]"
     )
     header_link.click()
-    print("✅ Clicked", link, "link\n***")
+    print("✅ Clicked on", link, "\n***")
 
 
 @step('Hover over {link} element')
@@ -273,8 +291,6 @@ def hover(context, link):
 
 @step('Verify {dropdown_element} dropdown')
 def verify_dropdown_element(context, dropdown_element):
-    # WORK ON LINE 259, wait should be changed depending on dropdown
-    # wait_for_element_by_xpath(context.driver, "//div[@class='rvi__title']")
     try:
         context.wait.until(
             attribute_to_be(
@@ -291,7 +307,16 @@ def verify_dropdown_element(context, dropdown_element):
         print(e)
 
 
+@step('Click on cart icon')
+def verify_cart(context):
+    context.driver.find_element(By.XPATH, "//li[@id='gh-minicart-hover']").click()
+    print("✅ Clicked on cart icon\n***")
+    # wait_for_element_by_xpath(context.driver, "//h1[@data-test-id='main-title' and text()='Shopping cart']")
+    # compare_urls(context.driver, "https://cart.ebay.com/", "Cart page")
+
+
 """
+legacy code ->>>
     dropdown_exp = context.driver.find_element(
         By.XPATH, f"//*[contains(@class,'gh-') and text() = '{dropdown_element}']/following-sibling::a[@aria-expanded]"
     )
@@ -300,7 +325,7 @@ def verify_dropdown_element(context, dropdown_element):
         print(dropdown_element, "has been expanded\n***")
     else:
         print("\033[91m", dropdown_element, "has NOT expanded !\033[0m\n***")
-"""
+
 
 #    check_dropdown(context.driver,f"//*[contains(@class,'gh-') and text() = '{dropdown_element}']
 #    /following-sibling::a[@aria-expanded]")
@@ -308,7 +333,6 @@ def verify_dropdown_element(context, dropdown_element):
 #    check_dropdown(context.driver, "//a[text()='Expand Watch List']", "Watch List dropdown")
 
 
-"""
 @step('Hover over "My eBay" and verify my ebay dropdown menu has opened')
 def hover_my_ebay(context):
     my_ebay_dd = context.driver.find_element(By.XPATH, "//a[@title='My eBay']")
@@ -325,19 +349,8 @@ def hover_notification(context):
     print("✅ Hovered over notifications icon\n***")
     wait_for_element_by_xpath(context.driver, "//span[@class='ghn-errb ghn-errb-a']/a/span")
     check_dropdown(context.driver, "//i[@id='gh-Alerts-i']//parent::button", "Notifications")
-"""
 
 
-@step('Click on cart icon and verify cart page has opened')
-def verify_cart(context):
-    cart_icon = context.driver.find_element(By.XPATH, "//li[@id='gh-minicart-hover']")
-    cart_icon.click()
-    print("✅ Clicked on cart icon\n***")
-    wait_for_element_by_xpath(context.driver, "//h1[@data-test-id='main-title' and text()='Shopping cart']")
-    compare_urls(context.driver, "https://cart.ebay.com/", "Cart page")
-
-
-"""
 @step('Click "{box}"')
 def header_navigation(context, box):
     context.nav_button = context.driver.find_element(
