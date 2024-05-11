@@ -33,10 +33,12 @@ Feature: eBay regression
     Then  Click Watchlist link
     And   Verify Watchlist dropdown
     Then  Navigate to eBay.com
+    Then  Hover over My eBay element
+    And   Verify My eBay dropdown
+    Then  Navigate to eBay.com
+    Then  Hover over Notification element
+    And   Verify Notification dropdown
+    Then  Navigate to eBay.com
     """
-    Then  Hover over "My eBay" and verify my ebay dropdown menu has opened
-    Then  Navigate to eBay.com
-    Then  Hover over notification icon and verify notifications have opened
-    Then  Navigate to eBay.com
     Then  Click on cart icon and verify cart page has opened
     """

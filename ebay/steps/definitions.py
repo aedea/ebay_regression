@@ -44,6 +44,7 @@ def attribute_to_be(locator, attribute, value):
     def _wait(driver):
         element = driver.find_element(*locator)
         return element.get_attribute(attribute) == value
+
     return _wait
 
 
@@ -253,12 +254,21 @@ def click_sell(context):
 
 
 @step('Click {link} link')
-def click_watchlist(context, link):
-    context.watchlist_btn = context.driver.find_element(
+def click_header_link(context, link):
+    header_link = context.driver.find_element(
         By.XPATH, f"//*[contains(@class,'gh-') and text() = '{link}']"
     )
-    context.watchlist_btn.click()
-    print("Clicked", link, "link\n***")
+    header_link.click()
+    print("✅ Clicked", link, "link\n***")
+
+
+@step('Hover over {link} element')
+def hover(context, link):
+    header_element = context.driver.find_element(
+        By.XPATH, f"//*[contains(@class,'gh-') and text() = '{link}']"
+    )
+    context.actions.move_to_element(header_element).perform()
+    print("✅ Hovered over", link, "element\n***")
 
 
 @step('Verify {dropdown_element} dropdown')
@@ -268,9 +278,13 @@ def verify_dropdown_element(context, dropdown_element):
     try:
         context.wait.until(
             attribute_to_be(
-                (By.XPATH, f"//*[contains(@class,'gh-') and text() = '{dropdown_element}']"
-                           f"/following-sibling::a[@aria-expanded]"), "aria-expanded", "true"))
-        print(dropdown_element, "has successfully opened\n***")
+                (By.XPATH,
+                 f"//*[contains(@class,'gh-') and text() = '{dropdown_element}']"
+                 f"/following-sibling::a[@aria-expanded] | "
+                 f"//*[contains(@class,'gh-') and text() = '{dropdown_element}']"
+                 f"/parent::button[@aria-expanded]"),
+                "aria-expanded", "true"))
+        print("✅", dropdown_element, "has successfully opened\n***")
     except TimeoutException:
         print("Timeout\n**")
     except Exception as e:
@@ -294,6 +308,7 @@ def verify_dropdown_element(context, dropdown_element):
 #    check_dropdown(context.driver, "//a[text()='Expand Watch List']", "Watch List dropdown")
 
 
+"""
 @step('Hover over "My eBay" and verify my ebay dropdown menu has opened')
 def hover_my_ebay(context):
     my_ebay_dd = context.driver.find_element(By.XPATH, "//a[@title='My eBay']")
@@ -310,6 +325,7 @@ def hover_notification(context):
     print("✅ Hovered over notifications icon\n***")
     wait_for_element_by_xpath(context.driver, "//span[@class='ghn-errb ghn-errb-a']/a/span")
     check_dropdown(context.driver, "//i[@id='gh-Alerts-i']//parent::button", "Notifications")
+"""
 
 
 @step('Click on cart icon and verify cart page has opened')
