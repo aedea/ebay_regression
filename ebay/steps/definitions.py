@@ -51,7 +51,8 @@ def attribute_to_be(locator, attribute, value):
 @step('Open Chrome')
 def open_chrome(context):
     context.driver = webdriver.Chrome()
-    context.wait = WebDriverWait(context.driver, 13)
+    context.driver.set_window_size(1920, 1080)
+    context.wait = WebDriverWait(context.driver, 15)
     context.actions = ActionChains(context.driver)
     print("✅ Browser has successfully opened\n***")
 
@@ -163,6 +164,72 @@ def click_sell_button(context):
 
 
 # 2nd test
+@step('Verify "{page}" page has opened. Expected url: "{expected_url}"')
+def compare_urls(context, page, expected_url):
+    # ! enter name of the page & expected url to compare if current url is the expected one
+    try:
+        context.wait.until(lambda driver: expected_url in driver.current_url)
+        print("✅", page, "page has successfully opened\n***")
+    except TimeoutException:
+        print("\033[91m ❌ Timeout occurred\033[0m")
+    except Exception as e:
+        print("\033[91m ❌ An error occurred:\033[0m", e)
+    """
+    if context.driver.current_url == expected_url:
+        print("✅", page, "page has successfully opened\n***")
+    else:
+        print("\033[91m❌", page, "page has NOT opened !\033[0m\n***")
+    """
+
+
+@step('Click on "{link}"')
+def click_header_link(context, link):
+    header_link = context.driver.find_element(
+        By.XPATH, f"//*[contains(@class,'gh-') and contains(text(), '{link}')] | "
+        f"//*[contains(@class,'gh-')]/child::a[contains(text(), '{link}')] | "
+        f"//*[contains(@class,'gh-')]/span/child::a[contains(text(), '{link}')]"
+    )
+    header_link.click()
+    print("✅ Clicked on", link, "\n***")
+
+
+@step('Hover over {link} element')
+def hover(context, link):
+    header_element = context.driver.find_element(
+        By.XPATH, f"//*[contains(@class,'gh-') and text() = '{link}']"
+    )
+    context.actions.move_to_element(header_element).perform()
+    print("✅ Hovered over", link, "element\n***")
+
+
+@step('Verify {dropdown_element} dropdown')
+def verify_dropdown_element(context, dropdown_element):
+    try:
+        context.wait.until(
+            attribute_to_be(
+                (By.XPATH,
+                 f"//*[contains(@class,'gh-') and text() = '{dropdown_element}']"
+                 f"/following-sibling::a[@aria-expanded] | "
+                 f"//*[contains(@class,'gh-') and text() = '{dropdown_element}']"
+                 f"/parent::button[@aria-expanded]"),
+                "aria-expanded", "true"))
+        print("✅", dropdown_element, "has successfully opened\n***")
+    except TimeoutException:
+        print("\033[91m ❌ Timeout occurred\033[0m")
+    except Exception as e:
+        print("\033[91m ❌ An error occurred:\033[0m", e)
+
+
+@step('Click on cart icon')
+def verify_cart(context):
+    context.driver.find_element(By.XPATH, "//li[@id='gh-minicart-hover']").click()
+    print("✅ Clicked on cart icon\n***")
+    # wait_for_element_by_xpath(context.driver, "//h1[@data-test-id='main-title' and text()='Shopping cart']")
+    # compare_urls(context.driver, "https://cart.ebay.com/", "Cart page")
+
+
+"""
+legacy code ->>>
 @step('Click "Sign in" and and verify sign in page is opened')
 def click_sign_in(context):
     context.sign_in_btn = context.driver.find_element(By.XPATH, "//span[@id='gh-ug']/a[text()='Sign in']")
@@ -194,7 +261,6 @@ def click_register(context):
     except Exception as e:
         print("❌", e)
 
-
 @step('Click "Daily Deals" and verify daily deals page has opened')
 def click_daily_deals(context):
     context.daily_deals_btn = context.driver.find_element(By.XPATH, "//a[text()=' Daily Deals' and @class='gh-p']")
@@ -206,8 +272,7 @@ def click_daily_deals(context):
         print("✅ Daily Deals page has successfully opened\n***")
     else:
         print("❌ Daily Deals page is not opened\n***")
-
-
+        
 @step('Click "Brand Outlet" and verify Brand Outlet page has opened')
 def click_brand_outlet(context):
     context.brand_outlet_link = context.driver.find_element(By.XPATH, "//li[@id='gh-p-4']/a")
@@ -222,8 +287,7 @@ def click_brand_outlet(context):
         print("❌ Timeout\n**")
     except Exception as e:
         print("❌", e)
-
-
+        
 @step('Click "Gift Cards" and verify gift cards page has opened')
 def click_gift_cards(context):
     context.gift_cards_btn = context.driver.find_element(
@@ -232,91 +296,7 @@ def click_gift_cards(context):
     context.gift_cards_btn.click()
     print("✅ Clicked 'Gift Cards' button\n***")
     compare_urls(context.driver, "https://www.ebay.com/giftcards", "Gift Cards page")
-
-
-@step('Click "Help & Contact" and verify help and contact page has opened')
-def click_help(context):
-    context.help_contact_btn = context.driver.find_element(
-        By.XPATH, "//a[contains(text(),'Help & Contact') and @class='gh-p']"
-    )
-    context.help_contact_btn.click()
-    print("✅ Clicked 'Help & Contact' button\n***")
-    wait_for_element_by_xpath(context.driver, "//a[@aria-current='location' and text()='Customer Service']")
-    compare_urls(context.driver, "https://www.ebay.com/help/home", "Help & Contact page")
-
-
-@step('Click "Sell" and verify sell page has opened')
-def click_sell(context):
-    context.sell_btn = context.driver.find_element(By.XPATH, "//a[contains(text(),'Sell') and @class='gh-p']")
-    context.sell_btn.click()
-    print("✅ Clicked 'Sell' button\n***")
-    compare_urls(context.driver, "https://www.ebay.com/sl/sell", "Sell page")
-
-
-@step('Verify "{page}" page has opened. Expected url: "{expected_url}"')
-def compare_urls(context, page, expected_url):
-    # ! enter name of the page & expected url to compare if current url is the expected one
-    try:
-        context.wait.until(lambda driver: driver.current_url == expected_url)
-        print("✅", page, "page has successfully opened\n***")
-    except TimeoutException:
-        print("Timeout\n**")
-    except Exception as e:
-        print(e)
-    """
-    if context.driver.current_url == expected_url:
-        print("✅", page, "page has successfully opened\n***")
-    else:
-        print("\033[91m❌", page, "page has NOT opened !\033[0m\n***")
-    """
-
-
-@step('Click on "{link}"')
-def click_header_link(context, link):
-    header_link = context.driver.find_element(
-        By.XPATH, f"//*[contains(@class,'gh-') and contains(text(), '{link}')]"
-    )
-    header_link.click()
-    print("✅ Clicked on", link, "\n***")
-
-
-@step('Hover over {link} element')
-def hover(context, link):
-    header_element = context.driver.find_element(
-        By.XPATH, f"//*[contains(@class,'gh-') and text() = '{link}']"
-    )
-    context.actions.move_to_element(header_element).perform()
-    print("✅ Hovered over", link, "element\n***")
-
-
-@step('Verify {dropdown_element} dropdown')
-def verify_dropdown_element(context, dropdown_element):
-    try:
-        context.wait.until(
-            attribute_to_be(
-                (By.XPATH,
-                 f"//*[contains(@class,'gh-') and text() = '{dropdown_element}']"
-                 f"/following-sibling::a[@aria-expanded] | "
-                 f"//*[contains(@class,'gh-') and text() = '{dropdown_element}']"
-                 f"/parent::button[@aria-expanded]"),
-                "aria-expanded", "true"))
-        print("✅", dropdown_element, "has successfully opened\n***")
-    except TimeoutException:
-        print("Timeout\n**")
-    except Exception as e:
-        print(e)
-
-
-@step('Click on cart icon')
-def verify_cart(context):
-    context.driver.find_element(By.XPATH, "//li[@id='gh-minicart-hover']").click()
-    print("✅ Clicked on cart icon\n***")
-    # wait_for_element_by_xpath(context.driver, "//h1[@data-test-id='main-title' and text()='Shopping cart']")
-    # compare_urls(context.driver, "https://cart.ebay.com/", "Cart page")
-
-
-"""
-legacy code ->>>
+    
     dropdown_exp = context.driver.find_element(
         By.XPATH, f"//*[contains(@class,'gh-') and text() = '{dropdown_element}']/following-sibling::a[@aria-expanded]"
     )
@@ -332,7 +312,23 @@ legacy code ->>>
 #    //*[contains(@class,'gh-') and text() = 'Watchlist']/following-sibling::a[@aria-expanded]
 #    check_dropdown(context.driver, "//a[text()='Expand Watch List']", "Watch List dropdown")
 
-
+@step('Click "Help & Contact" and verify help and contact page has opened')
+def click_help(context):
+    context.help_contact_btn = context.driver.find_element(
+        By.XPATH, "//a[contains(text(),'Help & Contact') and @class='gh-p']"
+    )
+    context.help_contact_btn.click()
+    print("✅ Clicked 'Help & Contact' button\n***")
+    wait_for_element_by_xpath(context.driver, "//a[@aria-current='location' and text()='Customer Service']")
+    compare_urls(context.driver, "https://www.ebay.com/help/home", "Help & Contact page")
+    
+@step('Click "Sell" and verify sell page has opened')
+def click_sell(context):
+    context.sell_btn = context.driver.find_element(By.XPATH, "//a[contains(text(),'Sell') and @class='gh-p']")
+    context.sell_btn.click()
+    print("✅ Clicked 'Sell' button\n***")
+    compare_urls(context.driver, "https://www.ebay.com/sl/sell", "Sell page")
+    
 @step('Hover over "My eBay" and verify my ebay dropdown menu has opened')
 def hover_my_ebay(context):
     my_ebay_dd = context.driver.find_element(By.XPATH, "//a[@title='My eBay']")

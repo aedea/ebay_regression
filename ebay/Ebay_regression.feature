@@ -14,20 +14,24 @@ Feature: eBay regression
   Scenario: All header elements/links are working & directing to corresponding pages
     Given Open Chrome
     Then  Navigate to eBay.com
-    """
-    Then  Click "Sign in" and and verify sign in page is opened
+    Then  Click on "Sign in"
+    And   Verify "Sign in" page has opened. Expected url: "https://signin.ebay.com"
     Then  Navigate to eBay.com
-    And   Click "register" and verify registration page has opened
+    And   Click on "register"
+    And   Verify "Registration" page has opened. Expected url: "https://signup.ebay.com"
     Then  Navigate to eBay.com
-    Then  Click "Daily Deals" and verify daily deals page has opened
+    Then  Click on "Daily Deals"
+    And   Verify "Daily Deals" page has opened. Expected url: "https://www.ebay.com/deals"
     Then  Navigate to eBay.com
-    Then  Click "Brand Outlet" and verify Brand Outlet page has opened
+    Then  Click on "Brand Outlet"
+    And   Verify "Brand Outlet" page has opened. Expected url: "https://www.ebay.com/b/Brand-Outlet"
     Then  Navigate to eBay.com
-    Then  Click "Gift Cards" and verify gift cards page has opened
+    Then  Click on "Gift Cards"
+    And   Verify "Gift Cards" page has opened. Expected url: "https://www.ebay.com/giftcards"
     Then  Navigate to eBay.com
-    Then  Click "Help & Contact" and verify help and contact page has opened
+    Then  Click on "Help & Contact"
+    And   Verify "Help & Contact" page has opened. Expected url: "https://www.ebay.com/help/home"
     Then  Navigate to eBay.com
-    """
     Then  Click on "Sell"
     And   Verify "Sell" page has opened. Expected url: "https://www.ebay.com/sl/sell"
     Then  Navigate to eBay.com
@@ -41,4 +45,4 @@ Feature: eBay regression
     And   Verify Notification dropdown
     Then  Navigate to eBay.com
     Then  Click on cart icon
-    And   Verify "Cart" page has opened. Expected url: "https://cart.ebay.com/"
+    And   Verify "Cart" page has opened. Expected url: "https://cart.ebay.com"
