@@ -20,31 +20,10 @@ def wait_for_element_by_xpath(driver, xpath, timeout=13):
         print("\033[91m ❌ An error occurred:\033[0m", e)
 
 
-def compare_urls(driver, expected_url, name_of_element):
-    # ! enter (expected url, name of element) to compare if current url is the expected one
-    # ! also put the name of the element being tested
-    # current_url = driver.current_url
-    if driver.current_url == expected_url:
-        print("✅", name_of_element, " has successfully opened\n***")
-    else:
-        print("\033[91m❌", name_of_element, "has NOT opened !\033[0m\n***")
-
-
-def check_dropdown(driver, xpath, name_of_element):
-    # ! enter xpath for dropdown and the name
-    dropdown_exp = driver.find_element(By.XPATH, xpath)
-    aria_exp_value = dropdown_exp.get_attribute("aria-expanded")
-    if aria_exp_value == "true":
-        print("✅", name_of_element, "has been expanded\n***")
-    else:
-        print("\033[91m❌", name_of_element, "has NOT expanded !\033[0m\n***")
-
-
 def attribute_to_be(locator, attribute, value):
     def _wait(driver):
         element = driver.find_element(*locator)
         return element.get_attribute(attribute) == value
-
     return _wait
 
 
@@ -230,6 +209,26 @@ def verify_cart(context):
 
 """
 legacy code ->>>
+def compare_urls(driver, expected_url, name_of_element):
+    # ! enter (expected url, name of element) to compare if current url is the expected one
+    # ! also put the name of the element being tested
+    # current_url = driver.current_url
+    if driver.current_url == expected_url:
+        print("✅", name_of_element, " has successfully opened\n***")
+    else:
+        print("\033[91m❌", name_of_element, "has NOT opened !\033[0m\n***")
+
+
+def check_dropdown(driver, xpath, name_of_element):
+    # ! enter xpath for dropdown and the name
+    dropdown_exp = driver.find_element(By.XPATH, xpath)
+    aria_exp_value = dropdown_exp.get_attribute("aria-expanded")
+    if aria_exp_value == "true":
+        print("✅", name_of_element, "has been expanded\n***")
+    else:
+        print("\033[91m❌", name_of_element, "has NOT expanded !\033[0m\n***")
+
+
 @step('Click "Sign in" and and verify sign in page is opened')
 def click_sign_in(context):
     context.sign_in_btn = context.driver.find_element(By.XPATH, "//span[@id='gh-ug']/a[text()='Sign in']")
