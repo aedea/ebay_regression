@@ -36,14 +36,74 @@ def open_chrome(context):
     print("✅ Browser has successfully opened\n***")
 
 
-@step('Navigate to eBay.com')
-def navigate_to_ebay(context):
-    context.driver.get("https://ebay.com")
-    #   waiting until logo has loaded
-    wait_for_element_by_xpath(context.driver, "//img[@id='gh-logo' and @alt='eBay Home']")
-    print("✅ Navigated to ebay.com\n***")
+@step('Go to "{url}"')
+def go_to_url(context, url):
+    try:
+        context.driver.get("https://"+url)
+        context.wait.until(ec.presence_of_element_located((By.TAG_NAME, "body")))
+        # line below is ONLY FOR EBAY.COM due to captcha and kicking out
+        wait_for_element_by_xpath(context.driver, "//img[@id='gh-logo' and @alt='eBay Home']")
+        print("✅ Went to", url, "\n***")
+    except Exception as e:
+        print("\033[91m ❌ An error occurred:\033[0m", e, "\n***")
 
 
+# 2ND TEST - HEADER VERIFICATION
+@step('Verify "{page}" page has opened. Expected url: "{expected_url}"')
+def compare_urls(context, page, expected_url):
+    # ! enter name of the page & expected url to compare if current url is the expected one
+    try:
+        context.wait.until(lambda driver: expected_url in driver.current_url)
+        print("✅", page, "page has successfully opened\n***")
+    except TimeoutException:
+        print("\033[91m ❌ Timeout occurred\033[0m\n***")
+    except Exception as e:
+        print("\033[91m ❌ An error occurred:\033[0m", e, "\n***")
+
+
+@step('Click on "{link}"')
+def click_header_link(context, link):
+    header_link = context.driver.find_element(
+        By.XPATH, f"//*[contains(@class,'gh-') and contains(text(), '{link}')] | "
+        f"//*[contains(@class,'gh-')]/child::a[contains(text(), '{link}')] | "
+        f"//*[contains(@class,'gh-')]/span/child::a[contains(text(), '{link}')] | "
+        f"//*[contains(@class,'gh-') and contains(text(), '{link}')]/preceding-sibling::a"
+    )
+    header_link.click()
+    print("✅ Clicked on", link)
+
+
+@step('Hover over {link} element')
+def hover(context, link):
+    header_element = context.driver.find_element(
+        By.XPATH, f"//*[contains(@class,'gh-') and text() = '{link}'] | "
+                  f"//*[contains(@class,'gh-') and contains(text(), '{link}')]/preceding-sibling::a"
+    )
+    context.actions.move_to_element(header_element).perform()
+    print("✅ Hovered over", link, "element")
+
+
+@step('Verify {dropdown_element} dropdown')
+def verify_dropdown_element(context, dropdown_element):
+    try:
+        context.wait.until(
+            attribute_to_be(
+                (By.XPATH,
+                 f"//*[contains(@class,'gh-') and text() = '{dropdown_element}']"
+                 f"/following-sibling::a[@aria-expanded] | "
+                 f"//*[contains(@class,'gh-') and text() = '{dropdown_element}']"
+                 f"/parent::button[@aria-expanded] | "
+                 f"//*[contains(@class,'gh-') and contains(text(), '{dropdown_element}')][@aria-expanded]"),
+                "aria-expanded", "true"))
+        print("✅", dropdown_element, "has successfully dropped down\n***")
+    except TimeoutException:
+        print("\033[91m ❌ Timeout occurred\033[0m\n***")
+    except Exception as e:
+        print("\033[91m ❌ An error occurred:\033[0m", e, "\n***")
+
+
+###
+# 1ST TEST - DRESS SEARCH
 @step('Enter "dress" to the searchbar')
 def enter_dress(context):
     searchbar = context.driver.find_element(By.XPATH, "//input[@aria-label='Search for anything']")
@@ -103,13 +163,6 @@ def click_add_to_cart_button(context):
     context.add_to_cart_btn.click()
     print("✅ Clicked 'Add to cart' button\n***")
     wait_for_element_by_xpath(context.driver, "//div[@class='ux-layout-section__row']//span[text()='Go to cart']")
-    """
-    context.wait.until(
-        ec.visibility_of_element_located(
-            (By.XPATH, "//div[@class='ux-layout-section__row']//span[text()='Go to cart']")
-        )
-    )
-    """
     print("✅ Lightbox has opened, product has been added to the cart\n***")
 
 
@@ -142,68 +195,22 @@ def click_sell_button(context):
     context.driver.quit()
 
 
-# 2nd test
-@step('Verify "{page}" page has opened. Expected url: "{expected_url}"')
-def compare_urls(context, page, expected_url):
-    # ! enter name of the page & expected url to compare if current url is the expected one
-    try:
-        context.wait.until(lambda driver: expected_url in driver.current_url)
-        print("✅", page, "page has successfully opened\n***")
-    except TimeoutException:
-        print("\033[91m ❌ Timeout occurred\033[0m\n***")
-    except Exception as e:
-        print("\033[91m ❌ An error occurred:\033[0m", e)
-    """
+"""
+legacy code ->>>
+
+@step('Navigate to eBay.com')
+def navigate_to_ebay(context):
+    context.driver.get("https://ebay.com")
+    #   waiting until logo has loaded
+    wait_for_element_by_xpath(context.driver, "//img[@id='gh-logo' and @alt='eBay Home']")
+    print("✅ Navigated to ebay.com\n***")
+    
     if context.driver.current_url == expected_url:
         print("✅", page, "page has successfully opened\n***")
     else:
         print("\033[91m❌", page, "page has NOT opened !\033[0m\n***")
-    """
-
-
-@step('Click on "{link}"')
-def click_header_link(context, link):
-    header_link = context.driver.find_element(
-        By.XPATH, f"//*[contains(@class,'gh-') and contains(text(), '{link}')] | "
-        f"//*[contains(@class,'gh-')]/child::a[contains(text(), '{link}')] | "
-        f"//*[contains(@class,'gh-')]/span/child::a[contains(text(), '{link}')] | "
-        f"//*[contains(@class,'gh-') and contains(text(), '{link}')]/preceding-sibling::a"
-    )
-    header_link.click()
-    print("✅ Clicked on", link, "\n***")
-
-
-@step('Hover over {link} element')
-def hover(context, link):
-    header_element = context.driver.find_element(
-        By.XPATH, f"//*[contains(@class,'gh-') and text() = '{link}'] | "
-                  f"//*[contains(@class,'gh-') and contains(text(), '{link}')]/preceding-sibling::a"
-    )
-    context.actions.move_to_element(header_element).perform()
-    print("✅ Hovered over", link, "element\n***")
-
-
-@step('Verify {dropdown_element} dropdown')
-def verify_dropdown_element(context, dropdown_element):
-    try:
-        context.wait.until(
-            attribute_to_be(
-                (By.XPATH,
-                 f"//*[contains(@class,'gh-') and text() = '{dropdown_element}']"
-                 f"/following-sibling::a[@aria-expanded] | "
-                 f"//*[contains(@class,'gh-') and text() = '{dropdown_element}']"
-                 f"/parent::button[@aria-expanded] | "
-                 f"//*[contains(@class,'gh-') and contains(text(), '{dropdown_element}')][@aria-expanded]"),
-                "aria-expanded", "true"))
-        print("✅", dropdown_element, "has successfully dropped down\n***")
-    except TimeoutException:
-        print("\033[91m ❌ Timeout occurred\033[0m\n***")
-    except Exception as e:
-        print("\033[91m ❌ An error occurred:\033[0m", e)
-
-
-"""
-legacy code ->>>
+    
+    
 @step('Click on cart icon')
 def verify_cart(context):
     context.driver.find_element(By.XPATH, "//li[@id='gh-minicart-hover']").click()
