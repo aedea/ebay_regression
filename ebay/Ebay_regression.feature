@@ -44,5 +44,7 @@ Feature: eBay regression
     Then  Hover over Notification element
     And   Verify Notification dropdown
     Then  Navigate to eBay.com
-    Then  Click on cart icon
+    Then  Hover over Cart element
+    And   Verify Cart dropdown
+    Then  Click on "Cart"
     And   Verify "Cart" page has opened. Expected url: "https://cart.ebay.com"
