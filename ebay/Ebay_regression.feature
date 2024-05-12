@@ -28,22 +28,22 @@ Feature: eBay regression
     Then  Go to "ebay.com"
     Then  Click on "Gift Cards"
     And   Verify "Gift Cards" page has opened. Expected url: "https://www.ebay.com/giftcards"
-    Then  Navigate to eBay.com
+    Then  Go to "ebay.com"
     Then  Click on "Help & Contact"
     And   Verify "Help & Contact" page has opened. Expected url: "https://www.ebay.com/help/home"
-    Then  Navigate to eBay.com
+    Then  Go to "ebay.com"
     Then  Click on "Sell"
     And   Verify "Sell" page has opened. Expected url: "https://www.ebay.com/sl/sell"
-    Then  Navigate to eBay.com
+    Then  Go to "ebay.com"
     Then  Click on "Watchlist"
     And   Verify Watchlist dropdown
-    Then  Navigate to eBay.com
+    Then  Go to "ebay.com"
     Then  Hover over My eBay element
     And   Verify My eBay dropdown
-    Then  Navigate to eBay.com
+    Then  Go to "ebay.com"
     Then  Hover over Notification element
     And   Verify Notification dropdown
-    Then  Navigate to eBay.com
+    Then  Go to "ebay.com"
     Then  Hover over Cart element
     And   Verify Cart dropdown
     Then  Click on "Cart"
