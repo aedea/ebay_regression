@@ -57,3 +57,4 @@ Feature: eBay regression
     When  Enter "dress" to the searchbar
     Then  Click on "Search" button
     Then  Filter by "Size", choose subsection "Petites" and select "PS"
+    Then  Verify all items are related to "dress"

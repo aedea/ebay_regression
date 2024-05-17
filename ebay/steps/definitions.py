@@ -5,6 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.action_chains import ActionChains
+from warnings import warn
 from time import sleep
 
 
@@ -31,7 +32,7 @@ def attribute_to_be(locator, attribute, value):
 def open_chrome(context):
     context.driver = webdriver.Chrome()
     context.driver.set_window_size(1920, 1080)
-    context.wait = WebDriverWait(context.driver, 15)
+    context.wait = WebDriverWait(context.driver, 30)
     context.actions = ActionChains(context.driver)
     print("✅ Browser has successfully opened\n***")
 
@@ -42,7 +43,7 @@ def go_to_url(context, url):
         context.driver.get("https://"+url)
         context.wait.until(ec.presence_of_element_located((By.TAG_NAME, "body")))
         # line below is ONLY FOR EBAY.COM due to captcha and kicking out
-        wait_for_element_by_xpath(context.driver, "//img[@id='gh-logo' and @alt='eBay Home']")
+        # wait_for_element_by_xpath(context.driver, "//img[@id='gh-logo' and @alt='eBay Home']")
         print("✅ Went to", url, "\n***")
     except Exception as e:
         print("\033[91m ❌ An error occurred:\033[0m", e, "\n***")
@@ -64,7 +65,6 @@ def filter_by_value(context, section, subsection, filter_value):
         subsection_select.click()
         context.wait.until(ec.presence_of_element_located((By.TAG_NAME, "body")))
         print("✅ Filtered by '"+section+"', '"+subsection+"', '"+filter_value+"'")
-        sleep(5)
     else:
         filter_check = filter_section.find_element(By.XPATH,
                                                    f".//div[@class='x-refine__select__svg']"
@@ -73,7 +73,22 @@ def filter_by_value(context, section, subsection, filter_value):
         filter_check.click()
         context.wait.until(ec.presence_of_element_located((By.TAG_NAME, "body")))
         print("✅ Filtered by '"+section+"' and selected '"+filter_value+"'")
-        sleep(5)
+
+
+@step('Verify all items are related to "{desired_title}"')
+def check_all_item_titles(context, desired_title):
+    all_items = context.driver.find_elements(By.XPATH, "//li[contains(@id, 'item')]//span[@role='heading']")
+    issues = []
+    c = 0
+    for item in all_items:
+        title = item.text
+        c += 1
+        print(c, title)
+        if desired_title.lower() not in title.lower():
+            issues.append(f'{title} is not {desired_title} related')
+    if issues:
+        raise Exception(f'Following issues discovered:\n{issues}')
+    sleep(10)
 
 
 # 2ND TEST - HEADER VERIFICATION
