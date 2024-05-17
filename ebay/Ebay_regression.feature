@@ -56,5 +56,5 @@ Feature: eBay regression
     And   Go to "ebay.com"
     When  Enter "dress" to the searchbar
     Then  Click on "Search" button
-    Then  Filter by "Size", choose subsection "Petites" and select "PS"
-    Then  Verify all items are related to "dress"
+    Then  Filter by "Size", choose subsection "Regular" and select "M"
+    Then  Verify all items on 2 pages are related to "dress"

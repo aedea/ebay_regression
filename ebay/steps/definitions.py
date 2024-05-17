@@ -64,7 +64,7 @@ def filter_by_value(context, section, subsection, filter_value):
             By.XPATH, f".//div[@class='size-component'][.//h4[text()='{subsection}']]//span[text()='{filter_value}']")
         subsection_select.click()
         context.wait.until(ec.presence_of_element_located((By.TAG_NAME, "body")))
-        print("✅ Filtered by '"+section+"', '"+subsection+"', '"+filter_value+"'")
+        print("✅ Filtered by '"+section+"', '"+subsection+"', '"+filter_value+"'\n***")
     else:
         filter_check = filter_section.find_element(By.XPATH,
                                                    f".//div[@class='x-refine__select__svg']"
@@ -72,23 +72,31 @@ def filter_by_value(context, section, subsection, filter_value):
                                                    )
         filter_check.click()
         context.wait.until(ec.presence_of_element_located((By.TAG_NAME, "body")))
-        print("✅ Filtered by '"+section+"' and selected '"+filter_value+"'")
+        print("✅ Filtered by '"+section+"' and selected '"+filter_value+"'\n***")
 
 
-@step('Verify all items are related to "{desired_title}"')
-def check_all_item_titles(context, desired_title):
-    all_items = context.driver.find_elements(By.XPATH, "//li[contains(@id, 'item')]//span[@role='heading']")
+@step('Verify all items on {number_of_pages} pages are related to "{desired_title}"')
+def check_all_item_titles(context, number_of_pages, desired_title):
+    number_of_pages = int(number_of_pages)
     issues = []
-    c = 0
-    for item in all_items:
-        title = item.text
-        c += 1
-        print(c, title)
-        if desired_title.lower() not in title.lower():
-            issues.append(f'{title} is not {desired_title} related')
+    page_count = 1
+    number_of_issues = 0
+    while page_count <= number_of_pages:
+        all_items = context.driver.find_elements(By.XPATH, "//li[contains(@id, 'item')]//span[@role='heading']")
+        item_count = 0
+        print("✅ Page #", page_count)
+        for item in all_items:
+            title = item.text
+            item_count += 1
+            print(item_count, title)
+            if desired_title.lower() not in title.lower():
+                issues.append(f'{title} is not "{desired_title}" related')
+                number_of_issues += 1
+        context.next_page = context.driver.find_element(By.XPATH, "//a[@aria-label='Go to next search page']").click()
+        context.wait.until(ec.presence_of_element_located((By.TAG_NAME, "body")))
+        page_count += 1
     if issues:
-        raise Exception(f'Following issues discovered:\n{issues}')
-    sleep(10)
+        raise Exception(f'Following {number_of_issues} issues discovered:\n{"\n".join(issues)}')
 
 
 # 2ND TEST - HEADER VERIFICATION
