@@ -43,13 +43,13 @@ def go_to_url(context, url):
         context.driver.get("https://"+url)
         context.wait.until(ec.presence_of_element_located((By.TAG_NAME, "body")))
         # line below is ONLY FOR EBAY.COM due to captcha and kicking out
-        # wait_for_element_by_xpath(context.driver, "//img[@id='gh-logo' and @alt='eBay Home']")
+        wait_for_element_by_xpath(context.driver, "//*[@id='gh-l-h1']")
         print("✅ Went to", url, "\n***")
     except Exception as e:
         print("\033[91m ❌ An error occurred:\033[0m", e, "\n***")
 
 
-# 3RD TEST - FILTER VERIFICATION
+# 3RD TEST - FILTER VALIDATION
 @step('Filter by "{section}", choose subsection "{subsection}" and select "{filter_value}"')
 def filter_by_value(context, section, subsection, filter_value):
     filter_section = context.driver.find_element(By.XPATH, f"//li[@class = 'x-refine__main__list ']"
@@ -99,7 +99,7 @@ def check_all_item_titles(context, number_of_pages, desired_title):
         raise Exception(f'Following {number_of_issues} issues discovered:\n{"\n".join(issues)}')
 
 
-# 2ND TEST - HEADER VERIFICATION
+# 2ND TEST - HEADER VALIDATION
 @step('Verify "{page}" page has opened. Expected url: "{expected_url}"')
 def compare_urls(context, page, expected_url):
     # ! enter name of the page & expected url to compare if current url is the expected one
@@ -128,7 +128,8 @@ def click_header_link(context, link):
 def hover(context, link):
     header_element = context.driver.find_element(
         By.XPATH, f"//*[contains(@class,'gh-') and text() = '{link}'] | "
-                  f"//*[contains(@class,'gh-') and contains(text(), '{link}')]/preceding-sibling::a"
+                  f"//*[contains(@class,'gh-') and contains(text(), '{link}')]/preceding-sibling::a | "
+                  f"//button[contains(@title, '{link}')]"
     )
     context.actions.move_to_element(header_element).perform()
     print("✅ Hovered over", link, "element")
@@ -144,7 +145,8 @@ def verify_dropdown_element(context, dropdown_element):
                  f"/following-sibling::a[@aria-expanded] | "
                  f"//*[contains(@class,'gh-') and text() = '{dropdown_element}']"
                  f"/parent::button[@aria-expanded] | "
-                 f"//*[contains(@class,'gh-') and contains(text(), '{dropdown_element}')][@aria-expanded]"),
+                 f"//*[contains(@class,'gh-') and contains(text(), '{dropdown_element}')][@aria-expanded] | "
+                 f"//button[contains(@title, '{dropdown_element}')]"),
                 "aria-expanded", "true"))
         print("✅", dropdown_element, "has successfully dropped down\n***")
     except TimeoutException:

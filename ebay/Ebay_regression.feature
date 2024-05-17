@@ -1,17 +1,19 @@
 Feature: eBay regression
 
-  # 1ST TEST - DRESS SEARCH
-  Scenario: User should be able to add item to the cart
-    Given Open Chrome
-    Then  Go to "ebay.com"
-    Then  Enter "dress" to the searchbar
-    Then  Click on "Search" button
-    Then  Click on the first dress
-    Then  Click "Add to cart button"
-    Then  Click "Go to cart"
-    And   Verify the item was added to the cart
 
-  # 2ND TEST - HEADER VERIFICATION
+  # 3RD TEST - FILTER VALIDATION
+  Scenario: Filter validation
+    Given Open Chrome
+    And   Go to "ebay.com"
+    When  Enter "dress" to the searchbar
+    Then  Click on "Search" button
+    # if there's no subsection, type "NONE"
+    Then  Filter by "Size", choose subsection "Regular" and select "M"
+    # type the number of desired pages to verify if titles are related to the search
+    Then  Verify all items on 5 pages are related to "dress"
+
+
+  # 2ND TEST - HEADER VALIDATION
   Scenario: All header elements/links are working & directing to corresponding pages
     Given Open Chrome
     Then  Go to "ebay.com"
@@ -42,19 +44,22 @@ Feature: eBay regression
     Then  Hover over My eBay element
     And   Verify My eBay dropdown
     Then  Go to "ebay.com"
-    Then  Hover over Notification element
-    And   Verify Notification dropdown
+    Then  Hover over Notifications element
+    And   Verify Notifications dropdown
     Then  Go to "ebay.com"
     Then  Hover over Cart element
     And   Verify Cart dropdown
     Then  Click on "Cart"
     And   Verify "Cart" page has opened. Expected url: "https://cart.ebay.com"
 
-  # 3RD TEST - FILTER VERIFICATION
-  Scenario: Filter validation
+
+  # 1ST TEST - DRESS SEARCH
+  Scenario: User should be able to add item to the cart
     Given Open Chrome
-    And   Go to "ebay.com"
-    When  Enter "dress" to the searchbar
+    Then  Go to "ebay.com"
+    Then  Enter "dress" to the searchbar
     Then  Click on "Search" button
-    Then  Filter by "Size", choose subsection "Regular" and select "M"
-    Then  Verify all items on 2 pages are related to "dress"
+    Then  Click on the first dress
+    Then  Click "Add to cart button"
+    Then  Click "Go to cart"
+    And   Verify the item was added to the cart
