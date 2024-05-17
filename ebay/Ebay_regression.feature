@@ -56,4 +56,4 @@ Feature: eBay regression
     And   Go to "ebay.com"
     When  Enter "dress" to the searchbar
     Then  Click on "Search" button
-    Then  Filter by "Condition", choose subsection "NONE" and select "New with tags"
+    Then  Filter by "Size", choose subsection "Petites" and select "PS"

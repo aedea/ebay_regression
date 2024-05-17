@@ -53,6 +53,8 @@ def go_to_url(context, url):
 def filter_by_value(context, section, subsection, filter_value):
     filter_section = context.driver.find_element(By.XPATH, f"//li[@class = 'x-refine__main__list ']"
                                                            f"[.//div[text() = '{section}']]")
+    if filter_section.get_attribute("aria-expanded") == "false":
+        filter_section.click()
     if subsection != "NONE":
         filter_subsection = filter_section.find_element(By.XPATH, f".//div[./h4[text()='{subsection}']]")
         if filter_subsection.get_attribute("aria-expanded") == "false":
