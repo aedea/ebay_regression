@@ -48,6 +48,32 @@ def go_to_url(context, url):
         print("\033[91m ❌ An error occurred:\033[0m", e, "\n***")
 
 
+# 3RD TEST - FILTER VERIFICATION
+@step('Filter by "{section}", choose subsection "{subsection}" and select "{filter_value}"')
+def filter_by_value(context, section, subsection, filter_value):
+    filter_section = context.driver.find_element(By.XPATH, f"//li[@class = 'x-refine__main__list ']"
+                                                           f"[.//div[text() = '{section}']]")
+    if subsection != "NONE":
+        filter_subsection = filter_section.find_element(By.XPATH, f".//div[./h4[text()='{subsection}']]")
+        if filter_subsection.get_attribute("aria-expanded") == "false":
+            filter_subsection.click()
+        subsection_select = filter_section.find_element(
+            By.XPATH, f".//div[@class='size-component'][.//h4[text()='{subsection}']]//span[text()='{filter_value}']")
+        subsection_select.click()
+        context.wait.until(ec.presence_of_element_located((By.TAG_NAME, "body")))
+        print("✅ Filtered by '"+section+"', '"+subsection+"', '"+filter_value+"'")
+        sleep(5)
+    else:
+        filter_check = filter_section.find_element(By.XPATH,
+                                                   f".//div[@class='x-refine__select__svg']"
+                                                   f"[.//span[text()='{filter_value}']]//input"
+                                                   )
+        filter_check.click()
+        context.wait.until(ec.presence_of_element_located((By.TAG_NAME, "body")))
+        print("✅ Filtered by '"+section+"' and selected '"+filter_value+"'")
+        sleep(5)
+
+
 # 2ND TEST - HEADER VERIFICATION
 @step('Verify "{page}" page has opened. Expected url: "{expected_url}"')
 def compare_urls(context, page, expected_url):

@@ -1,5 +1,6 @@
 Feature: eBay regression
 
+  # 1ST TEST - DRESS SEARCH
   Scenario: User should be able to add item to the cart
     Given Open Chrome
     Then  Go to "ebay.com"
@@ -10,7 +11,7 @@ Feature: eBay regression
     Then  Click "Go to cart"
     And   Verify the item was added to the cart
 
-
+  # 2ND TEST - HEADER VERIFICATION
   Scenario: All header elements/links are working & directing to corresponding pages
     Given Open Chrome
     Then  Go to "ebay.com"
@@ -48,3 +49,11 @@ Feature: eBay regression
     And   Verify Cart dropdown
     Then  Click on "Cart"
     And   Verify "Cart" page has opened. Expected url: "https://cart.ebay.com"
+
+  # 3RD TEST - FILTER VERIFICATION
+  Scenario: Filter validation
+    Given Open Chrome
+    And   Go to "ebay.com"
+    When  Enter "dress" to the searchbar
+    Then  Click on "Search" button
+    Then  Filter by "Condition", choose subsection "NONE" and select "New with tags"
