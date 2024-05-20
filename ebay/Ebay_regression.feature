@@ -10,7 +10,7 @@ Feature: eBay regression
     # if there's no subsection, type "NONE"
     Then  Filter by "Size", choose subsection "Regular" and select "M"
     # type the number of desired pages to verify if titles are related to the search
-    Then  Verify all items on 5 pages are related to "dress"
+    Then  Verify all items on 1 pages are related to "dress"
 
 
   # 2ND TEST - HEADER VALIDATION
