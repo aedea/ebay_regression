@@ -1,5 +1,5 @@
 from behave import step
-from selenium import webdriver
+# from selenium import webdriver
 from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -28,6 +28,7 @@ def attribute_to_be(locator, attribute, value):
     return _wait
 
 
+"""
 @step('Open Chrome')
 def open_chrome(context):
     context.driver = webdriver.Chrome()
@@ -35,6 +36,7 @@ def open_chrome(context):
     context.wait = WebDriverWait(context.driver, 30)
     context.actions = ActionChains(context.driver)
     print("✅ Browser has successfully opened\n***")
+"""
 
 
 @step('Go to "{url}"')
@@ -97,6 +99,13 @@ def check_all_item_titles(context, number_of_pages, desired_title):
         page_count += 1
     if issues:
         raise Exception(f'Following {number_of_issues} issues discovered:\n{"\n".join(issues)}')
+
+
+@step('Go to page #{search_page}')
+def go_to_page(context, search_page):
+    context.driver.find_element(By.XPATH, f"//li[a[@class='pagination__item' and text()='{search_page}']]").click()
+    context.wait.until(ec.presence_of_element_located((By.TAG_NAME, "body")))
+    print("Went to page #", search_page)
 
 
 # 2ND TEST - HEADER VALIDATION
