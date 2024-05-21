@@ -3,6 +3,7 @@ Feature: eBay regression
   Background:
     Given Go to "ebay.com"
 
+
   # 3RD TEST - FILTER VALIDATION
   Scenario: Filter validation
     Then  Enter "dress" to the searchbar
@@ -18,22 +19,6 @@ Feature: eBay regression
   Scenario Outline: All header elements/links are working & directing to corresponding pages
     Then  Click on "<Header link>"
     And   Verify "<Page title>" page has opened. Expected url: "<Expected URL>"
-
-    """
-    Then  Click on "Watchlist"
-    And   Verify Watchlist dropdown
-    Then  Go to "ebay.com"
-    Then  Hover over My eBay element
-    And   Verify My eBay dropdown
-    Then  Go to "ebay.com"
-    Then  Hover over Notifications element
-    And   Verify Notifications dropdown
-    Then  Go to "ebay.com"
-    Then  Hover over Cart element
-    And   Verify Cart dropdown
-    Then  Click on "Cart"
-    And   Verify "Cart" page has opened. Expected url: "https://cart.ebay.com"
-    """
   Examples:
     | Header link    | Page title     | Expected URL                        |
     | Sign in        | Sign in        | https://signin.ebay.com             |
@@ -43,6 +28,17 @@ Feature: eBay regression
     | Gift Cards     | Gift Cards     | https://www.ebay.com/giftcards      |
     | Help & Contact | Help & Contact | https://www.ebay.com/help/home      |
     | Sell           | Sell           | https://www.ebay.com/sl/sell        |
+    | Cart           | Cart           | https://cart.ebay.com               |
+
+  Scenario Outline: Validate header dropdowns
+    Then  Hover over <Header element> element
+    And   Verify <Header element> dropdown
+  Examples:
+    | Header element |
+    | Watchlist      |
+    | My eBay        |
+    | Notification   |
+    | Cart           |
 
 
   # 1ST TEST - DRESS SEARCH

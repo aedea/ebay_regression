@@ -2,9 +2,8 @@ from behave import step
 # from selenium import webdriver
 from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
+# from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
-from selenium.webdriver.common.action_chains import ActionChains
 from warnings import warn
 from time import sleep
 
@@ -12,7 +11,7 @@ from time import sleep
 def wait_for_element_by_xpath(driver, xpath, timeout=13):
     # ! enter xpath to wait for the element to be loaded
     try:
-        WebDriverWait(driver, timeout).until(
+        driver.WebDriverWait(driver, timeout).until(
             ec.visibility_of_element_located((By.XPATH, xpath))
         )
     except TimeoutException:
@@ -137,11 +136,17 @@ def click_header_link(context, link):
 def hover(context, link):
     header_element = context.driver.find_element(
         By.XPATH, f"//*[contains(@class,'gh-') and text() = '{link}'] | "
-                  f"//*[contains(@class,'gh-') and contains(text(), '{link}')]/preceding-sibling::a | "
-                  f"//button[contains(@title, '{link}')]"
+                  f"//*[contains(@class,'gh-') and contains(text(), '{link}')]/preceding-sibling::a"
     )
     context.actions.move_to_element(header_element).perform()
-    print("✅ Hovered over", link, "element")
+    if header_element.find_element(By.XPATH,
+                                   "./following-sibling::a[@aria-expanded] | "
+                                   "./parent::button[@aria-expanded]"
+                                   ).get_attribute("aria-expanded") == "true":
+        print("✅ Hovered over", link, "element")
+    else:
+        header_element.click()
+        print("✅ Clicked on", link, "element")
 
 
 @step('Verify {dropdown_element} dropdown')
