@@ -1,19 +1,15 @@
 from behave import step
-# from selenium import webdriver
 from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
-# from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
-from warnings import warn
-from time import sleep
+# from warnings import warn
+# from time import sleep
 
 
-def wait_for_element_by_xpath(driver, xpath, timeout=13):
+def wait_for_element_by_xpath(context, xpath):
     # ! enter xpath to wait for the element to be loaded
     try:
-        driver.WebDriverWait(driver, timeout).until(
-            ec.visibility_of_element_located((By.XPATH, xpath))
-        )
+        context.wait.until(ec.visibility_of_element_located((By.XPATH, xpath)))
     except TimeoutException:
         print("\033[91m ❌ Timeout occurred: Element not found\033[0m")
     except Exception as e:
@@ -27,24 +23,13 @@ def attribute_to_be(locator, attribute, value):
     return _wait
 
 
-"""
-@step('Open Chrome')
-def open_chrome(context):
-    context.driver = webdriver.Chrome()
-    context.driver.set_window_size(1920, 1080)
-    context.wait = WebDriverWait(context.driver, 30)
-    context.actions = ActionChains(context.driver)
-    print("✅ Browser has successfully opened\n***")
-"""
-
-
 @step('Go to "{url}"')
 def go_to_url(context, url):
     try:
         context.driver.get("https://"+url)
         context.wait.until(ec.presence_of_element_located((By.TAG_NAME, "body")))
         # line below is ONLY FOR EBAY.COM due to captcha and kicking out
-        wait_for_element_by_xpath(context.driver, "//*[@id='gh-l-h1']")
+        wait_for_element_by_xpath(context, "//*[@id='gh-l-h1']")
         print("✅ Went to", url, "\n***")
     except Exception as e:
         print("\033[91m ❌ An error occurred:\033[0m", e, "\n***")
@@ -145,6 +130,7 @@ def hover(context, link):
                                    ).get_attribute("aria-expanded") == "true":
         print("✅ Hovered over", link, "element")
     else:
+        # if hovering didn't work, click on the element
         header_element.click()
         print("✅ Clicked on", link, "element")
 
@@ -229,7 +215,7 @@ def click_add_to_cart_button(context):
     )
     context.add_to_cart_btn.click()
     print("✅ Clicked 'Add to cart' button\n***")
-    wait_for_element_by_xpath(context.driver, "//div[@class='ux-layout-section__row']//span[text()='Go to cart']")
+    wait_for_element_by_xpath(context, "//div[@class='ux-layout-section__row']//span[text()='Go to cart']")
     print("✅ Lightbox has opened, product has been added to the cart\n***")
 
 
