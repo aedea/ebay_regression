@@ -121,12 +121,14 @@ def click_header_link(context, link):
 def hover(context, link):
     header_element = context.driver.find_element(
         By.XPATH, f"//*[contains(@class,'gh-') and text() = '{link}'] | "
-                  f"//*[contains(@class,'gh-') and contains(text(), '{link}')]/preceding-sibling::a"
+                  f"//*[contains(@class,'gh-') and contains(text(), '{link}')]/preceding-sibling::a | "
+                  f"//button[contains(@title, '{link}')]"
     )
     context.actions.move_to_element(header_element).perform()
     if header_element.find_element(By.XPATH,
                                    "./following-sibling::a[@aria-expanded] | "
-                                   "./parent::button[@aria-expanded]"
+                                   "./parent::button[@aria-expanded] | "
+                                   "./self::button[@aria-expanded]"
                                    ).get_attribute("aria-expanded") == "true":
         print("✅ Hovered over", link, "element")
     else:

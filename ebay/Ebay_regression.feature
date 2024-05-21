@@ -9,10 +9,10 @@ Feature: eBay regression
     Then  Enter "dress" to the searchbar
     And   Click on "Search" button
     # if there's no subsection, type "NONE"
-    Then  Filter by "Size", choose subsection "Regular" and select "M"
-    Then  Go to page #2
+    Then  Filter by "Size", choose subsection "Regular" and select "S"
+    Then  Go to page #5
     # type the number of desired pages to verify if titles are related to the search
-    Then  Verify all items on 3 pages are related to "dress"
+    Then  Verify all items on 2 pages are related to "dress"
 
 
   # 2ND TEST - HEADER VALIDATION
