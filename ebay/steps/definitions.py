@@ -67,7 +67,7 @@ def validate_titles(context, initial_page, desired_title):
             context.number_of_issues += 1
 
 
-@step('Verify all titles from page #{initial_page} to page #{desired_page} are related to "{desired_title}"')
+@step('Verify all titles from page №{initial_page} to page №{desired_page} are related to "{desired_title}"')
 def check_all_item_titles(context, initial_page, desired_page, desired_title):
     context.driver.find_element(By.XPATH, f"//a[@class='pagination__item'][text()='{initial_page}']").click()
     context.wait.until(ec.presence_of_element_located((By.TAG_NAME, "body")))
@@ -90,9 +90,7 @@ def check_all_item_titles(context, initial_page, desired_page, desired_title):
                 context.wait.until(ec.presence_of_element_located((By.TAG_NAME, "body")))
                 print('✅ Clicked previous page button')
                 initial_page -= 1
-        validate_titles(context, initial_page, desired_title)
-    else:
-        validate_titles(context, initial_page, desired_title)
+    validate_titles(context, initial_page, desired_title)
     if context.issues:
         raise Exception(f'Following {context.number_of_issues} issues discovered:\n{"\n".join(context.issues)}')
 

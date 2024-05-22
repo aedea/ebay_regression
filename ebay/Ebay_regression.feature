@@ -10,7 +10,7 @@ Feature: eBay regression
     And   Click on "Search" button
     # if there's no subsection, type "NONE"
     Then  Filter by "Dress Length", choose subsection "NONE" and select "Short"
-    Then  Verify all titles from page #6 to page #3 are related to "dress"
+    Then  Verify all titles from page №1 to page №3 are related to "dress"
 
 
   # 2ND TEST - HEADER VALIDATION
