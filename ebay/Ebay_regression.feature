@@ -6,29 +6,27 @@ Feature: eBay regression
 
   # 3RD TEST - FILTER VALIDATION
   Scenario: Filter validation
-    Then  Enter "dress" to the searchbar
+    Then  Enter "dress" into the searchbar
     And   Click on "Search" button
     # if there's no subsection, type "NONE"
-    Then  Filter by "Size", choose subsection "Regular" and select "S"
-    Then  Go to page #5
-    # type the number of desired pages to verify if titles are related to the search
-    Then  Verify all items on 2 pages are related to "dress"
+    Then  Filter by "Dress Length", choose subsection "NONE" and select "Short"
+    Then  Verify all titles from page #6 to page #3 are related to "dress"
 
 
   # 2ND TEST - HEADER VALIDATION
   Scenario Outline: All header elements/links are working & directing to corresponding pages
     Then  Click on "<Header link>"
-    And   Verify "<Page title>" page has opened. Expected url: "<Expected URL>"
+    And   Verify "<Header link>" page has opened. Expected url: "<Expected URL>"
   Examples:
-    | Header link    | Page title     | Expected URL                        |
-    | Sign in        | Sign in        | https://signin.ebay.com             |
-    | register       | Registration   | https://signup.ebay.com             |
-    | Daily Deals    | Daily Deals    | https://www.ebay.com/deals          |
-    | Brand Outlet   | Brand Outlet   | https://www.ebay.com/b/Brand-Outlet |
-    | Gift Cards     | Gift Cards     | https://www.ebay.com/giftcards      |
-    | Help & Contact | Help & Contact | https://www.ebay.com/help/home      |
-    | Sell           | Sell           | https://www.ebay.com/sl/sell        |
-    | Cart           | Cart           | https://cart.ebay.com               |
+    | Header link    | Expected URL                        |
+    | Sign in        | https://signin.ebay.com             |
+    | register       | https://signup.ebay.com             |
+    | Daily Deals    | https://www.ebay.com/deals          |
+    | Brand Outlet   | https://www.ebay.com/b/Brand-Outlet |
+    | Gift Cards     | https://www.ebay.com/giftcards      |
+    | Help & Contact | https://www.ebay.com/help/home      |
+    | Sell           | https://www.ebay.com/sl/sell        |
+    | Cart           | https://cart.ebay.com               |
 
   Scenario Outline: Validate header dropdowns
     Then  Hover over <Header element> element
@@ -43,7 +41,7 @@ Feature: eBay regression
 
   # 1ST TEST - DRESS SEARCH
   Scenario: User should be able to add item to the cart
-    Then  Enter "dress" to the searchbar
+    Then  Enter "dress" into the searchbar
     Then  Click on "Search" button
     Then  Click on the first dress
     Then  Click "Add to cart button"

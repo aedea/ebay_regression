@@ -16,13 +16,6 @@ def wait_for_element_by_xpath(context, xpath):
         print("\033[91m ❌ An error occurred:\033[0m", e)
 
 
-def attribute_to_be(locator, attribute, value):
-    def _wait(driver):
-        element = driver.find_element(*locator)
-        return element.get_attribute(attribute) == value
-    return _wait
-
-
 @step('Go to "{url}"')
 def go_to_url(context, url):
     try:
@@ -61,28 +54,47 @@ def filter_by_value(context, section, subsection, filter_value):
         print("✅ Filtered by '"+section+"' and selected '"+filter_value+"'\n***")
 
 
-@step('Verify all items on {number_of_pages} pages are related to "{desired_title}"')
-def check_all_item_titles(context, number_of_pages, desired_title):
-    number_of_pages = int(number_of_pages)
-    issues = []
-    page_count = 1
-    number_of_issues = 0
-    while page_count <= number_of_pages:
-        all_items = context.driver.find_elements(By.XPATH, "//li[contains(@id, 'item')]//span[@role='heading']")
-        item_count = 0
-        print("✅ Page #", page_count)
-        for item in all_items:
-            title = item.text
-            item_count += 1
-            print(item_count, title)
-            if desired_title.lower() not in title.lower():
-                issues.append(f'{title} is not "{desired_title}" related')
-                number_of_issues += 1
-        context.next_page = context.driver.find_element(By.XPATH, "//a[@aria-label='Go to next search page']").click()
-        context.wait.until(ec.presence_of_element_located((By.TAG_NAME, "body")))
-        page_count += 1
-    if issues:
-        raise Exception(f'Following {number_of_issues} issues discovered:\n{"\n".join(issues)}')
+def validate_titles(context, initial_page, desired_title):
+    all_items = context.driver.find_elements(By.XPATH, "//li[contains(@id, 'item')]//span[@role='heading']")
+    item_count = 0
+    print("⬇️ Page #", initial_page)
+    for item in all_items:
+        title = item.text
+        item_count += 1
+        print(item_count, title)
+        if desired_title.lower() not in title.lower():
+            context.issues.append(f'{title} is not "{desired_title}" related')
+            context.number_of_issues += 1
+
+
+@step('Verify all titles from page #{initial_page} to page #{desired_page} are related to "{desired_title}"')
+def check_all_item_titles(context, initial_page, desired_page, desired_title):
+    context.driver.find_element(By.XPATH, f"//a[@class='pagination__item'][text()='{initial_page}']").click()
+    context.wait.until(ec.presence_of_element_located((By.TAG_NAME, "body")))
+    context.number_of_issues = 0
+    context.issues = []
+    initial_page = int(initial_page)
+    desired_page = int(desired_page)
+    if initial_page != desired_page:
+        while initial_page != desired_page:
+            validate_titles(context, initial_page, desired_title)
+            if initial_page < desired_page:
+                context.next_page = context.driver.find_element(By.XPATH,
+                                                                "//a[@aria-label='Go to next search page']").click()
+                context.wait.until(ec.presence_of_element_located((By.TAG_NAME, "body")))
+                print('✅ Clicked next page button')
+                initial_page += 1
+            else:
+                context.next_page = context.driver.find_element(By.XPATH,
+                                                                "//a[@aria-label='Go to previous search page']").click()
+                context.wait.until(ec.presence_of_element_located((By.TAG_NAME, "body")))
+                print('✅ Clicked previous page button')
+                initial_page -= 1
+        validate_titles(context, initial_page, desired_title)
+    else:
+        validate_titles(context, initial_page, desired_title)
+    if context.issues:
+        raise Exception(f'Following {context.number_of_issues} issues discovered:\n{"\n".join(context.issues)}')
 
 
 @step('Go to page #{search_page}')
@@ -137,6 +149,13 @@ def hover(context, link):
         print("✅ Clicked on", link, "element")
 
 
+def attribute_to_be(locator, attribute, value):
+    def _wait(driver):
+        element = driver.find_element(*locator)
+        return element.get_attribute(attribute) == value
+    return _wait
+
+
 @step('Verify {dropdown_element} dropdown')
 def verify_dropdown_element(context, dropdown_element):
     try:
@@ -159,11 +178,11 @@ def verify_dropdown_element(context, dropdown_element):
 
 ###
 # 1ST TEST - DRESS SEARCH
-@step('Enter "dress" to the searchbar')
-def enter_dress(context):
+@step('Enter "{search_text}" into the searchbar')
+def enter_dress(context, search_text):
     searchbar = context.driver.find_element(By.XPATH, "//input[@aria-label='Search for anything']")
-    searchbar.send_keys("dress")
-    print("✅ Entered 'dress' into the search bar\n***")
+    searchbar.send_keys(f"{search_text}")
+    print(f"✅ Entered '{search_text}' into the search bar\n***")
 
 
 @step('Click on "Search" button')
@@ -247,4 +266,26 @@ def click_sell_button(context):
         print("❌ Timeout\n**")
     except Exception as e:
         print("❌", e)
-    context.driver.quit()
+
+# @step('Verify all items on {number_of_pages} pages are related to "{desired_title}"')
+# def check_all_item_titles(context, number_of_pages, desired_title):
+#     number_of_pages = int(number_of_pages)
+#     issues = []
+#     page_count = 1
+#     number_of_issues = 0
+#     while page_count <= number_of_pages:
+#         all_items = context.driver.find_elements(By.XPATH, "//li[contains(@id, 'item')]//span[@role='heading']")
+#         item_count = 0
+#         print("✅ Page #", page_count)
+#         for item in all_items:
+#             title = item.text
+#             item_count += 1
+#             print(item_count, title)
+#             if desired_title.lower() not in title.lower():
+#                 issues.append(f'{title} is not "{desired_title}" related')
+#                 number_of_issues += 1
+#         context.next_page = context.driver.find_element(By.XPATH, "//a[@aria-label='Go to next search page']").click()
+#         context.wait.until(ec.presence_of_element_located((By.TAG_NAME, "body")))
+#         page_count += 1
+#     if issues:
+#         raise Exception(f'Following {number_of_issues} issues discovered:\n{"\n".join(issues)}')
