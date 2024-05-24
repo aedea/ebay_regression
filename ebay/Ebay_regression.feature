@@ -3,14 +3,13 @@ Feature: eBay regression
   Background:
     Given Go to "ebay.com"
 
-
   # 3RD TEST - FILTER VALIDATION
   Scenario: Filter validation
     Then  Enter "dress" into the searchbar
     And   Click on "Search" button
     # if there's no subsection, type "NONE"
-    Then  Filter by "Dress Length", choose subsection "NONE" and select "Short"
-    Then  Verify all titles from page №1 to page №3 are related to "dress"
+    Then  Filter by "Color", choose subsection "NONE" and select "Red"
+    Then  Verify all titles from page №5 to page №3 are related to "dress"
 
 
   # 2ND TEST - HEADER VALIDATION
@@ -37,7 +36,6 @@ Feature: eBay regression
     | My eBay        |
     | Notification   |
     | Cart           |
-
 
   # 1ST TEST - DRESS SEARCH
   Scenario: User should be able to add item to the cart

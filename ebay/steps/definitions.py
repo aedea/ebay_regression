@@ -35,10 +35,10 @@ def filter_by_value(context, section, subsection, filter_value):
         context.wait.until(ec.presence_of_element_located((By.TAG_NAME, "body")))
         print("✅ Filtered by '"+section+"', '"+subsection+"', '"+filter_value+"'\n***")
     else:
-        filter_check = filter_section.find_element(By.XPATH,
-                                                   f".//div[@class='x-refine__select__svg']"
-                                                   f"[.//span[text()='{filter_value}']]//input"
-                                                   )
+        filter_check = filter_section.find_element(
+            By.XPATH, f".//div[@class='x-refine__select__svg'][.//span[text()='{filter_value}']]//input | "
+                      f".//span[text()='{filter_value}']/parent::a"
+        )
         filter_check.click()
         context.wait.until(ec.presence_of_element_located((By.TAG_NAME, "body")))
         print("✅ Filtered by '"+section+"' and selected '"+filter_value+"'\n***")

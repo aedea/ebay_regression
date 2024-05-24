@@ -1,7 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
-from behave import fixture, use_fixture
 import os
 import re
 
@@ -16,7 +15,7 @@ def before_all(context):
 
 def after_step(context, step):
     if step.status == 'failed':
-        # sanitizing file name
+        # sanitizing step name
         step_name = re.sub(r'[\W_]+', '_', step.name)
         current_dir = os.path.dirname(__file__)
         screenshots_dir = os.path.abspath(os.path.join(current_dir, 'screenshots'))
