@@ -95,14 +95,17 @@ def go_to_page(context, search_page):
 # 2ND TEST - HEADER VALIDATION
 @step('Verify "{page}" page has opened. Expected url: "{expected_url}"')
 def compare_urls(context, page, expected_url):
-    # ! enter name of the page & expected url to compare if current url is the expected one
-    try:
-        context.wait.until(lambda driver: expected_url in driver.current_url)
-        print("✅", page, "page has successfully opened\n***")
-    except TimeoutException:
-        print("\033[91m ❌ Timeout occurred\033[0m\n***")
-    except Exception as e:
-        print("\033[91m ❌ An error occurred:\033[0m", e, "\n***")
+    # ! enter name of the page & expected url to assert if current url is the expected one
+    actual_url = context.driver.current_url
+    assert expected_url in actual_url, \
+        f"Expected URL to contain '{expected_url}', but got '{actual_url}'"
+    print("✅", page, "page has successfully opened\n***")
+    # try:
+    #     # context.wait.until(lambda driver: expected_url in driver.current_url)
+    # except TimeoutException:
+    #     print("\033[91m ❌ Timeout occurred\033[0m\n***")
+    # except Exception as e:
+    #     print("\033[91m ❌ An error occurred:\033[0m", e, "\n***")
 
 
 @step('Click on "{link}"')
@@ -215,16 +218,6 @@ def click_first_dress(context):
     )
     # storing product title to compare in the next step if this item was added to the cart
     context.product_title = product_title_el.text
-
-
-# def wait_for_element_by_xpath(context, xpath):
-#     # ! enter xpath to wait for the element to be loaded
-#     try:
-#         context.wait.until(ec.visibility_of_element_located((By.XPATH, xpath)))
-#     except TimeoutException:
-#         print("\033[91m ❌ Timeout occurred: Element not found\033[0m")
-#     except Exception as e:
-#         print("\033[91m ❌ An error occurred:\033[0m", e)
 
 
 @step('Click "Add to cart button"')
