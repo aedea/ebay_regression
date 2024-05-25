@@ -7,11 +7,17 @@ Feature: eBay regression
   Scenario: Categories validation
     Then  Hover over Shop by category element
     And   Verify Shop by category dropdown
-    Then  The categories and subcategories should be:
-    | Category              | Subcategories                                                                                                            |
-    | Motors                | Parts & accessories; Cars & trucks; Motorcycles; Other vehicles                                                          |
-    | Electronics           | Computers, Tablets & Network Hardware; Cell Phones, Smart Watches & Accessories; Video Games & Consoles; Cameras & Photo |
-    | Collectibles & Art    | Trading cards; Collectibles; Coins & Paper Money; Sports Memorabilia                                                     |
+    Then  Validate categories and subcategories are matching the table
+    | Category                    | Subcategories                                                                                  |
+    | Collectibles & art          | Collectibles; Antiques; Sports memorabilia; Art                                                |
+    | Electronics                 | Computers & tablets; Cameras & photo; TV, audio & surveillance; Cell phones & accessories      |
+    | Fashion                     | Women; Men; Jewelry & watches; Shoes                                                           |
+    | Home & garden               | Yard, garden & outdoor; Crafts; Home improvement; Pet supplies                                 |
+    | Auto Parts & Accessories    | GPS & Security Devices; Radar & Laser Detectors; Care & Detailing; Scooter Parts & Accessories |
+    | Musical instruments & gear  | Guitar; Pro audio equipment; String; Stage lighting & effects                                  |
+    | Sporting goods              | Outdoor sports; Team sports; Exercise & fitness; Golf                                          |
+    | Toys & hobbies              | Radio control; Kids toys; Action figures; Dolls & bears                                        |
+    | Other categories            | Video games & consoles; Health & beauty; Baby; Business & industrial                           |
 
 
 # 3RD TEST - FILTER VALIDATION

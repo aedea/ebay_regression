@@ -19,24 +19,27 @@ def go_to_url(context, url):
 
 
 # 4TH TEST - CATEGORIES VALIDATION
-@step('The categories and subcategories should be:')
-def step_impl(context):
+@step('Validate categories and subcategories are matching the table')
+def categories_validation(context):
     # extracting expected categories from context.table
     expected_categories = {row['Category']: row['Subcategories'].split('; ') for row in context.table}
-    print("1")
     categories = context.driver.find_elements(By.XPATH, "//h3[contains(@class, 'gh-')][./following-sibling::ul]")
-    print("2")
     actual_categories = {}
     for category in categories:
-        print(category.text)
+        print("⬇️", category.text)
         category_name = category.text.strip()
-        subcategory_elements = category.find_elements(By.XPATH, "//a[@class='scnd']")
+        subcategory_elements = context.driver.find_elements(
+            By.XPATH, f"//h3[a[text()='{category_name}']]/following-sibling::ul[1]//a")
+        for subcategory in subcategory_elements:
+            print(subcategory.text.strip())
+        print("*")
         subcategory_names = [subcategory.text.strip() for subcategory in subcategory_elements]
         actual_categories[category_name] = subcategory_names
     for category, subcategories in expected_categories.items():
         assert category in actual_categories, f"Category '{category}' not found"
         assert set(actual_categories[category]) == set(
-            subcategories), f"Subcategories for '{category}' do not match. Expected {subcategories}, but got {actual_categories[category]}"
+            subcategories), (f"Subcategories for '{category}' do not match.\n"
+                             f"Expected {subcategories},\n but got {actual_categories[category]}")
 
 
 # 3RD TEST - FILTER VALIDATION
