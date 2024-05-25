@@ -3,7 +3,18 @@ Feature: eBay regression
   Background:
     Given Go to "ebay.com"
 
-  # 3RD TEST - FILTER VALIDATION
+# 4TH TEST - CATEGORIES VALIDATION
+  Scenario: Categories validation
+    Then  Hover over Shop by category element
+    And   Verify Shop by category dropdown
+    Then  The categories and subcategories should be:
+    | Category              | Subcategories                                                                                                            |
+    | Motors                | Parts & accessories; Cars & trucks; Motorcycles; Other vehicles                                                          |
+    | Electronics           | Computers, Tablets & Network Hardware; Cell Phones, Smart Watches & Accessories; Video Games & Consoles; Cameras & Photo |
+    | Collectibles & Art    | Trading cards; Collectibles; Coins & Paper Money; Sports Memorabilia                                                     |
+
+
+# 3RD TEST - FILTER VALIDATION
   Scenario: Filter validation
     Then  Enter "dress" into the searchbar
     And   Click on "Search" button
@@ -12,7 +23,7 @@ Feature: eBay regression
     Then  Verify all titles from page №5 to page №3 are related to "dress"
 
 
-  # 2ND TEST - HEADER VALIDATION
+# 2ND TEST - HEADER VALIDATION
   Scenario Outline: All header elements/links are working & directing to corresponding pages
     Then  Click on "<Header link>"
     And   Verify "<Header link>" page has opened. Expected url: "<Expected URL>"
@@ -37,7 +48,8 @@ Feature: eBay regression
     | Notification   |
     | Cart           |
 
-  # 1ST TEST - DRESS SEARCH
+
+# 1ST TEST - DRESS SEARCH
   Scenario: User should be able to add item to the cart
     Then  Enter "dress" into the searchbar
     Then  Click on "Search" button

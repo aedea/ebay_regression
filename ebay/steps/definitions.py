@@ -3,7 +3,7 @@ from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 # from warnings import warn
-# from time import sleep
+from time import sleep
 
 
 @step('Go to "{url}"')
@@ -16,6 +16,27 @@ def go_to_url(context, url):
         print("✅ Went to", url, "\n***")
     except Exception as e:
         print("\033[91m ❌ An error occurred:\033[0m", e, "\n***")
+
+
+# 4TH TEST - CATEGORIES VALIDATION
+@step('The categories and subcategories should be:')
+def step_impl(context):
+    # extracting expected categories from context.table
+    expected_categories = {row['Category']: row['Subcategories'].split('; ') for row in context.table}
+    print("1")
+    categories = context.driver.find_elements(By.XPATH, "//h3[contains(@class, 'gh-')][./following-sibling::ul]")
+    print("2")
+    actual_categories = {}
+    for category in categories:
+        print(category.text)
+        category_name = category.text.strip()
+        subcategory_elements = category.find_elements(By.XPATH, "//a[@class='scnd']")
+        subcategory_names = [subcategory.text.strip() for subcategory in subcategory_elements]
+        actual_categories[category_name] = subcategory_names
+    for category, subcategories in expected_categories.items():
+        assert category in actual_categories, f"Category '{category}' not found"
+        assert set(actual_categories[category]) == set(
+            subcategories), f"Subcategories for '{category}' do not match. Expected {subcategories}, but got {actual_categories[category]}"
 
 
 # 3RD TEST - FILTER VALIDATION
@@ -125,7 +146,8 @@ def hover(context, link):
     header_element = context.driver.find_element(
         By.XPATH, f"//*[contains(@class,'gh-') and text() = '{link}'] | "
                   f"//*[contains(@class,'gh-') and contains(text(), '{link}')]/preceding-sibling::a | "
-                  f"//button[contains(@title, '{link}')]"
+                  f"//button[contains(@title, '{link}')] | "
+                  f"//button[contains(text(), '{link}')][@aria-expanded]"
     )
     context.actions.move_to_element(header_element).perform()
     if header_element.find_element(By.XPATH,
@@ -138,6 +160,7 @@ def hover(context, link):
         # if hovering didn't work, click on the element
         header_element.click()
         print("✅ Clicked on", link, "element")
+    sleep(1)
 
 
 def attribute_to_be(locator, attribute, value):
