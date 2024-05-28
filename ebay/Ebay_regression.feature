@@ -8,16 +8,16 @@ Feature: eBay regression
     Then  Hover over Shop by category element
     And   Verify Shop by category dropdown
     Then  Validate categories and subcategories are matching the table
-    | Category                    | Subcategories                                                                                  |
-    | Collectibles & art          | Collectibles; Antiques; Sports memorabilia; Art                                                |
-    | Electronics                 | Computers & tablets; Cameras & photo; TV, audio & surveillance; Cell phones & accessories      |
-    | Fashion                     | Women; Men; Jewelry & watches; Shoes                                                           |
-    | Home & garden               | Yard, garden & outdoor; Crafts; Home improvement; Pet supplies                                 |
-    | Auto Parts & Accessories    | GPS & Security Devices; Radar & Laser Detectors; Care & Detailing; Scooter Parts & Accessories |
-    | Musical instruments & gear  | Guitar; Pro audio equipment; String; Stage lighting & effects                                  |
-    | Sporting goods              | Outdoor sports; Team sports; Exercise & fitness; Golf                                          |
-    | Toys & hobbies              | Radio control; Kids toys; Action figures; Dolls & bears                                        |
-    | Other categories            | Video games & consoles; Health & beauty; Baby; Business & industrial                           |
+    | Category                    | Subcategories |
+    | collectibles & art          | collectibles; trading cards; sports memorabilia; coins & paper money |
+    | electronics                 | cameras & photo; computers, tablets & network hardware; video games & consoles; cell phones, smart watches & accessories |
+    | business & industrial       | restaurant & food service; test, measurement & inspection equipment; heavy equipment, parts & attachments; modular & pre-fabricated buildings |
+    | home & garden               | home improvement; yard, garden & outdoor living items; tools & workshop equipment; kitchen, dining & bar supplies |
+    | clothing & accessories      | handbags; women; men; collectible sneakers |
+    | jewelry & watches           | fine jewelry; wristwatches; luxury watches; fashion jewelry |
+    | sporting goods              | golf equipment; hunting equipment; outdoor sports; cycling equipment |
+    | motors                      | other vehicles; parts & accessories; cars & trucks; motorcycles |
+    | other categories            | baby essentials; toys & hobbies; books, movies & music; health & beauty |
 
 
 # 3RD TEST - FILTER VALIDATION
