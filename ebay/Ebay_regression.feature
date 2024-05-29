@@ -26,7 +26,7 @@ Feature: eBay regression
     And   Click on "Search" button
     # if there's no subsection, type "NONE"
     Then  Filter by "Color", choose subsection "NONE" and select "Red"
-    Then  Verify all titles from page №5 to page №3 are related to "dress"
+    Then  Verify all titles from page №5 to page №4 are related to "dress"
 
 
 # 2ND TEST - HEADER VALIDATION

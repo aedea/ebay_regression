@@ -3,7 +3,7 @@ from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 # from warnings import warn
-from time import sleep
+# from time import sleep
 
 
 @step('Go to "{url}"')
@@ -33,16 +33,15 @@ def categories_validation(context):
     for category in categories:
         category_name = category.text.strip().lower()
         print(f"⬇️ {category_name}")  # debug print to show the category being processed
-        # Finding all subcategory elements within this category
+        # finding all subcategory elements within this category
         subcategory_elements = category.find_elements(By.XPATH, "./following-sibling::ul[1]//a[@class='scnd']")
         subcategory_names = set(subcategory.text.strip().lower() for subcategory in subcategory_elements)
         actual_categories[category_name] = subcategory_names
         # debug prints for each subcategory
         for subcategory_name in subcategory_names:
-            print(subcategory_name)
-        print("*")
-    discrepancies = []
+            print(subcategory_name, "\n*")
     # checking for unexpected and missing categories
+    discrepancies = []
     unexpected_categories = set(actual_categories.keys()) - set(expected_categories.keys())
     missing_categories = set(expected_categories.keys()) - set(actual_categories.keys())
     if unexpected_categories or missing_categories:
@@ -153,7 +152,7 @@ def compare_urls(context, page, expected_url):
     # ! enter name of the page & expected url to assert if current url is the expected one
     actual_url = context.driver.current_url
     assert expected_url in actual_url, \
-        f"Expected URL to contain '{expected_url}', but got '{actual_url}'"
+        f"\nExpected URL to contain '{expected_url}', but got '{actual_url}'"
     print("✅", page, "page has successfully opened\n***")
     # try:
     #     # context.wait.until(lambda driver: expected_url in driver.current_url)
@@ -194,7 +193,6 @@ def hover(context, link):
         # if hovering didn't work, click on the element
         header_element.click()
         print("✅ Clicked on", link, "element")
-    sleep(1)
 
 
 def attribute_to_be(locator, attribute, value):
@@ -241,7 +239,7 @@ def click_search_button(context):
     #   waiting until 1st dress is loaded and visible
     context.first_dress = context.wait.until(
         ec.visibility_of_element_located(
-            (By.XPATH, "(//div[@class='s-item__image-wrapper image-treatment'])[2]")
+            (By.XPATH, "(//div[@class='s-item__image-wrapper image-treatment'])[3]")
         )
     )
     print("✅ Results page has loaded\n***")
@@ -310,31 +308,8 @@ def click_sell_button(context):
         context.wait.until(
             ec.text_to_be_present_in_element((By.XPATH, "//div[@data-test-id='app-cart']"), context.product_title)
         )
-        print("✅ Item was successfully added to the cart")
+        print("✅ Item was successfully added to the cart\n***")
     except TimeoutException:
         print("❌ Timeout\n**")
     except Exception as e:
         print("❌", e)
-
-# @step('Verify all items on {number_of_pages} pages are related to "{desired_title}"')
-# def check_all_item_titles(context, number_of_pages, desired_title):
-#     number_of_pages = int(number_of_pages)
-#     issues = []
-#     page_count = 1
-#     number_of_issues = 0
-#     while page_count <= number_of_pages:
-#         all_items = context.driver.find_elements(By.XPATH, "//li[contains(@id, 'item')]//span[@role='heading']")
-#         item_count = 0
-#         print("✅ Page #", page_count)
-#         for item in all_items:
-#             title = item.text
-#             item_count += 1
-#             print(item_count, title)
-#             if desired_title.lower() not in title.lower():
-#                 issues.append(f'{title} is not "{desired_title}" related')
-#                 number_of_issues += 1
-#         context.next_page = context.driver.find_element(By.XPATH, "//a[@aria-label='Go to next search page']").click()
-#         context.wait.until(ec.presence_of_element_located((By.TAG_NAME, "body")))
-#         page_count += 1
-#     if issues:
-#         raise Exception(f'Following {number_of_issues} issues discovered:\n{"\n".join(issues)}')
