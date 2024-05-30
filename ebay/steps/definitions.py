@@ -39,7 +39,8 @@ def categories_validation(context):
         actual_categories[category_name] = subcategory_names
         # debug prints for each subcategory
         for subcategory_name in subcategory_names:
-            print(subcategory_name, "\n*")
+            print(subcategory_name)
+        print("*")
     # checking for unexpected and missing categories
     discrepancies = []
     unexpected_categories = set(actual_categories.keys()) - set(expected_categories.keys())
