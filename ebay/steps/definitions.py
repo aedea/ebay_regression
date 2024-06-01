@@ -1,9 +1,9 @@
 from behave import step
-from selenium.common import TimeoutException
+from selenium.common import TimeoutException, NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 # from warnings import warn
-# from time import sleep
+from time import sleep
 
 
 @step('Go to "{url}"')
@@ -16,6 +16,42 @@ def go_to_url(context, url):
         print("✅ Went to", url, "\n***")
     except Exception as e:
         print("\033[91m ❌ An error occurred:\033[0m", e, "\n***")
+
+
+# 5TH TEST - BANNER VALIDATION
+@step('Make sure the banner is visible')
+def banner_visibility(context):
+    context.banner_slides = context.wait.until(
+        ec.presence_of_all_elements_located(
+            (By.XPATH, "//li[@class='carousel__snap-point vl-carousel__item'][div[@class='tracking-wrapper']]")),
+        message="❌ Banner slides aren't present on the page\n***"
+    )
+    print("✅ Banner slides have loaded and present on the page\n***")
+
+
+def get_active_slide_index(context):
+    for i, slide in enumerate(context.banner_slides):
+        if slide.get_attribute("aria-hidden") is None:
+            return i
+    return None  # in case no active slide is found
+
+
+@step('Verify the banner is spinning by default')
+def banner_spinning(context):
+    number_of_spins = 3
+    initial_slide_num = get_active_slide_index(context)  # + 1
+    print(f"Initial slide № {initial_slide_num}")
+    for _ in range(number_of_spins):
+        expected_next_slide = (initial_slide_num + 1) % len(context.banner_slides)
+        context.wait.until(
+            lambda driver: get_active_slide_index(context) == expected_next_slide
+        )
+        new_active_slide = get_active_slide_index(context)
+        if new_active_slide == expected_next_slide:
+            print(f"Transitioned to the next slide № {new_active_slide}")
+        else:
+            print("Slide transition failed.")
+        initial_slide_num = new_active_slide
 
 
 # 4TH TEST - CATEGORIES VALIDATION
@@ -71,6 +107,21 @@ def categories_validation(context):
         assert False, "\nDiscrepancies found:\n" + "\n".join(discrepancies)
     else:
         print("✅ All categories and subcategories are matching perfectly!")
+
+
+# @step('Click on All Categories dropdown')
+# def click_all_categories_dropdown(context):
+#     context.all_categories_dd = context.driver.find_element(
+#         By. XPATH, f"//div[@id='gh-cat-box'][.//option[text()='All Categories']]").click()
+#     context.wait.until(ec.presence_of_element_located((By.TAG_NAME, "body")))
+#     print("Clicked on All Categories dropdown")
+#
+#
+# @step('Verify All Categories dropped down')
+# def verify_all_categories_dropped_down(context):
+#     class_attribute = context.all_categories_dd.get_attribute("class")
+#     assert "gh-cat-box-focus" in class_attribute, "All Categories hasn't dropped down"
+#     print("All categories has dropped down")
 
 
 # 3RD TEST - FILTER VALIDATION

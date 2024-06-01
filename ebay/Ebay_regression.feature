@@ -3,8 +3,17 @@ Feature: eBay regression
   Background:
     Given Go to "ebay.com"
 
+# 5TH TEST - BANNER VALIDATION
+  Scenario: Banner validation
+    Then  Make sure the banner is visible
+    And   Verify the banner is spinning by default
+#    And   Verify forward button is working and switching to the next slide
+#    And   Verify previous button is working and switching to the previous slide
+#    And   Verify pause button is working and it pauses automatic slide scrolling
+
+
 # 4TH TEST - CATEGORIES VALIDATION
-  Scenario: Categories validation
+  Scenario: Shop by category validation
     Then  Hover over Shop by category element
     And   Verify Shop by category dropdown
     Then  Validate categories and subcategories are matching the table
@@ -19,6 +28,9 @@ Feature: eBay regression
     | motors                 | other vehicles; parts & accessories; cars & trucks; motorcycles |
     | other categories       | baby essentials; toys & hobbies; books, movies & music; health & beauty |
 
+#  Scenario: All categories dropdown validation
+#    Then  Click on All Categories dropdown
+#    And   Verify All Categories dropped down
 
 # 3RD TEST - FILTER VALIDATION
   Scenario: Filter validation
