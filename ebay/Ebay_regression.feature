@@ -6,7 +6,8 @@ Feature: eBay regression
 # 5TH TEST - BANNER VALIDATION
   Scenario: Banner validation
     Then  Make sure the banner is visible
-    And   Verify the banner is spinning by default
+    And   Validate the banner is spinning by default
+    Then  Validate 3 banner transitions
 #    And   Verify forward button is working and switching to the next slide
 #    And   Verify previous button is working and switching to the previous slide
 #    And   Verify pause button is working and it pauses automatic slide scrolling
