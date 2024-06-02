@@ -14,8 +14,11 @@ def banner_visibility(context):
         message="❌ Banner isn't visible\n***"
     )
     print("✅ Banner is visible\n***")
+    # collecting banner slides
     context.banner_slides = context.driver.find_elements(
         By.XPATH, "//li[@class='carousel__snap-point vl-carousel__item'][div[@class='tracking-wrapper']]")
+    context.next_transitions = 0
+    context.prev_transitions = 0
 
 
 def get_active_slide_index(context):
@@ -26,11 +29,22 @@ def get_active_slide_index(context):
 
 
 def check_slide_transition(context):
+    # calculating indexes for next and previous slides
     expected_next_slide = (context.initial_slide_index + 1) % len(context.banner_slides)
+    expected_prev_slide = (context.initial_slide_index - 1 + len(context.banner_slides)) % len(context.banner_slides)
+    # getting the current active slide index
     new_active_slide_index = get_active_slide_index(context)
+    # checking if transitioned to the next slide
     if new_active_slide_index == expected_next_slide:
-        print(f"🛈 Transitioned to slide № {new_active_slide_index + 1}")
-        context.initial_slide_index = new_active_slide_index  # next iteration update
+        print(f"🛈 Transitioned to the next slide № {new_active_slide_index + 1}")
+        context.initial_slide_index = new_active_slide_index  # update for next iteration
+        context.next_transitions += 1
+        return True
+    # checking if transitioned to the previous slide
+    elif new_active_slide_index == expected_prev_slide:
+        print(f"🛈 Transitioned to the previous slide № {new_active_slide_index + 1}")
+        context.initial_slide_index = new_active_slide_index  # update for next iteration
+        context.prev_transitions += 1
         return True
     else:
         print("❌ Slide transition failed\n***")
@@ -38,10 +52,32 @@ def check_slide_transition(context):
 
 
 def wait_for_slide_transition(context):
+    # storing the current slide index before waiting for a change
+    current_slide_index = context.initial_slide_index
+    # waiting until the slide index changes from the current index
     context.wait.until(
-        lambda driver:
-        get_active_slide_index(context) == (context.initial_slide_index + 1) % len(context.banner_slides)
+        lambda driver: get_active_slide_index(context) != current_slide_index,
+        message="Failed to transition to a different slide within the timeout period."
     )
+    # getting the new active slide index after the transition
+    new_slide_index = get_active_slide_index(context)
+    # determining the direction of the transition and update context accordingly
+    if new_slide_index == (current_slide_index + 1) % len(context.banner_slides):
+        print(f"🛈 Transitioned to the next slide № {new_slide_index + 1}")
+        context.next_transitions += 1
+    elif new_slide_index == (current_slide_index - 1 + len(context.banner_slides)) % len(context.banner_slides):
+        print(f"🛈 Transitioned to the previous slide № {new_slide_index + 1}")
+        context.prev_transitions += 1
+    else:
+        print("❌ Slide transition failed or transitioned to a non-adjacent slide\n***")
+    # updating the initial_slide_index for subsequent checks
+    context.initial_slide_index = new_slide_index
+
+# def wait_for_slide_transition(context):
+#     context.wait.until(
+#         lambda driver:
+#         get_active_slide_index(context) == (context.initial_slide_index + 1) % len(context.banner_slides)
+#     )
 
 
 @step('Validate the banner is spinning by default')
