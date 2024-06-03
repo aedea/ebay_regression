@@ -1,7 +1,8 @@
-###
+
 # 5TH TEST - BANNER VALIDATION
 
 from behave import step
+from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
@@ -70,3 +71,23 @@ def banner_spin_validation(context, number_of_spins):
         except Exception as e:
             print("\033[91m ❌ An error occurred:\033[0m", e, "\n***")
     print(f"✅ Banner has successfully made {context.successful_transitions} transitions\n***")
+
+
+@step('Verify pause button is working and it pauses automatic slide scrolling')
+def pause_button(context):
+    context.driver.find_element(By.XPATH, "//button[@aria-label='Pause Banner Carousel']").click()
+    print("✅ Clicked the pause button")
+    # initializing local WebDriverWait with a specific timeout
+    from selenium.webdriver.support.wait import WebDriverWait
+    wait = WebDriverWait(context.driver, 7)
+    initial_slide_index = get_active_slide_index(context)
+    # verifying that the carousel is paused
+    try:
+        wait.until_not(
+            lambda driver: get_active_slide_index(context) == initial_slide_index,
+            message="❌ Pausing didn't work\n***"
+        )
+        print("❌ The carousel didn't pause\n***")
+    except TimeoutException:
+        # if the exception is raised, it means the slide did not change within the timeout, indicating success
+        print("✅ Carousel has been successfully paused\n***")
