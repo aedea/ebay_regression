@@ -7,12 +7,11 @@ Feature: eBay regression
   Scenario: Banner validation
     Then  Make sure the banner is visible
     And   Validate the banner is spinning by default
-    Then  Validate 3 banner transitions
     Then  Verify forward button is working and switching to the next slide
     Then  Verify previous button is working and switching to the previous slide
     Then  Verify pause button is working and it pauses automatic slide scrolling
     Then  Verify resume button is working and it resumes automatic slide scrolling
-    Then  Wait 7 seconds
+    Then  Validate 3 banner transitions
 
 
 # 4TH TEST - CATEGORIES VALIDATION

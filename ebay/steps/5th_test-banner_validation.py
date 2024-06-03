@@ -72,14 +72,14 @@ def banner_spin_validation(context, number_of_spins):
             wait_and_check_transition(context)
         except Exception as e:
             print("\033[91m ❌ An error occurred:\033[0m", e, "\n***")
-    print(f"✅ Banner has successfully made {context.successful_transitions-1} transitions\n***")
+    print(f"✅ Banner has successfully made {number_of_spins} more transitions\n***")
 
 
 @step('Verify pause button is working and it pauses automatic slide scrolling')
 def pause_button_validation(context):
     pause_btn = context.driver.find_element(By.XPATH, "//button[@aria-label='Pause Banner Carousel']")
     context.driver.execute_script("arguments[0].click();", pause_btn)
-    print("✅ Clicked the pause button\n🛈 Waiting for a couple of seconds to verify that the carousel is paused..")
+    print("🛈 Clicked the pause button\n🛈 Waiting for a couple of seconds to verify that the carousel is paused..")
     # initializing local WebDriverWait with a specific timeout
     from selenium.webdriver.support.wait import WebDriverWait
     wait = WebDriverWait(context.driver, 6)
@@ -100,7 +100,7 @@ def resume_button_validation(context):
     try:
         resume_btn = context.driver.find_element(By.XPATH, "//button[@aria-label='Play Banner Carousel']")
         context.driver.execute_script("arguments[0].click();", resume_btn)
-        print("✅ Clicked the resume button")
+        print("🛈 Clicked the resume button")
         wait_and_check_transition(context)
     except Exception as e:
         print("\033[91m ❌ An error occurred:\033[0m", e, "\n***")
@@ -125,7 +125,7 @@ def forward_button_switching(context):
         sleep(1)
         forward_btn = context.driver.find_element(By.XPATH, "//button[@aria-label='Go to next banner']")
         context.driver.execute_script("arguments[0].click();", forward_btn)
-        print("✅ Clicked the forward button")
+        print("🛈 Clicked the forward button")
         wait_and_check_transition(context)
         print("✅ Forward button is working\n***")
     except Exception as e:
@@ -138,7 +138,7 @@ def previous_button_switching(context):
         sleep(1)  # using implicit wait due to carousel transition animations
         backward_btn = context.driver.find_element(By.XPATH, "//button[@aria-label='Go to previous banner']")
         context.driver.execute_script("arguments[0].click();", backward_btn)
-        print("✅ Clicked the backward button")
+        print("🛈 Clicked the backward button")
         wait_and_check_transition(context)
         print("✅ Backward button is working\n***")
     except Exception as e:
