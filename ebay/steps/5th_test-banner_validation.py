@@ -78,7 +78,8 @@ def banner_spin_validation(context, number_of_spins):
 @step('Verify pause button is working and it pauses automatic slide scrolling')
 def pause_button_validation(context):
     pause_btn = context.driver.find_element(By.XPATH, "//button[@aria-label='Pause Banner Carousel']")
-    context.driver.execute_script("arguments[0].click();", pause_btn)
+    pause_btn.click()
+    # context.driver.execute_script("arguments[0].click();", pause_btn)  # try js click in case transitions are breaking
     print("🛈 Clicked the pause button\n🛈 Waiting for a couple of seconds to verify that the carousel is paused..")
     # initializing local WebDriverWait with a specific timeout
     from selenium.webdriver.support.wait import WebDriverWait
@@ -99,7 +100,8 @@ def pause_button_validation(context):
 def resume_button_validation(context):
     try:
         resume_btn = context.driver.find_element(By.XPATH, "//button[@aria-label='Play Banner Carousel']")
-        context.driver.execute_script("arguments[0].click();", resume_btn)
+        resume_btn.click()
+        # context.driver.execute_script("arguments[0].click();", resume_btn)
         print("🛈 Clicked the resume button")
         wait_and_check_transition(context)
     except Exception as e:
@@ -124,7 +126,8 @@ def forward_button_switching(context):
     try:
         sleep(1)
         forward_btn = context.driver.find_element(By.XPATH, "//button[@aria-label='Go to next banner']")
-        context.driver.execute_script("arguments[0].click();", forward_btn)
+        forward_btn.click()
+        # context.driver.execute_script("arguments[0].click();", forward_btn)
         print("🛈 Clicked the forward button")
         wait_and_check_transition(context)
         print("✅ Forward button is working\n***")
@@ -137,7 +140,8 @@ def previous_button_switching(context):
     try:
         sleep(1)  # using implicit wait due to carousel transition animations
         backward_btn = context.driver.find_element(By.XPATH, "//button[@aria-label='Go to previous banner']")
-        context.driver.execute_script("arguments[0].click();", backward_btn)
+        backward_btn.click()
+        # context.driver.execute_script("arguments[0].click();", backward_btn)
         print("🛈 Clicked the backward button")
         wait_and_check_transition(context)
         print("✅ Backward button is working\n***")

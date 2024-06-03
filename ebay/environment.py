@@ -10,7 +10,7 @@ def before_all(context):
     context.driver.set_window_size(1920, 1080)
     context.wait = WebDriverWait(context.driver, 30)
     context.actions = ActionChains(context.driver)
-    print("✅ Browser has successfully opened\n***")
+    print("✅ Browser instance is successfully initiated\n***")
 
 
 def after_step(context, step):
