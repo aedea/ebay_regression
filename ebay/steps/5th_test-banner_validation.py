@@ -5,6 +5,7 @@ from behave import step
 from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
+from time import sleep
 
 
 @step('Make sure the banner is visible')
@@ -115,3 +116,15 @@ def resume_button_validation(context):
         print(f"✅ Carousel is resumed and moved to slide № {new_slide_index + 1}\n***")
     except TimeoutException:
         print("❌ Carousel did not resume automatic sliding as expected\n***")
+
+
+@step('Verify forward button is working and switching to the next slide')
+def forward_button_switching(context):
+    try:
+        sleep(1)
+        forward_btn = context.driver.find_element(By.XPATH, "//button[@aria-label='Go to next banner']")
+        context.driver.execute_script("arguments[0].click();", forward_btn)
+        print("✅ Clicked the forward button")
+        wait_and_check_transition(context)
+    except Exception as e:
+        print("\033[91m ❌ An error occurred:\033[0m", e, "\n***")
