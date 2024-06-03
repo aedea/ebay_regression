@@ -18,4 +18,5 @@ def go_to_url(context, url):
 
 @step('Wait {sec} seconds')
 def wait(context, sec):
+    print("🛈 Waiting for", sec, "seconds..\n***")
     sleep(int(sec))

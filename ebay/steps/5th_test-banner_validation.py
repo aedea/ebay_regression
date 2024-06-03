@@ -74,20 +74,44 @@ def banner_spin_validation(context, number_of_spins):
 
 
 @step('Verify pause button is working and it pauses automatic slide scrolling')
-def pause_button(context):
-    context.driver.find_element(By.XPATH, "//button[@aria-label='Pause Banner Carousel']").click()
-    print("✅ Clicked the pause button")
+def pause_button_validation(context):
+    pause_btn = context.driver.find_element(By.XPATH, "//button[@aria-label='Pause Banner Carousel']")
+    context.driver.execute_script("arguments[0].click();", pause_btn)
+    print("✅ Clicked the pause button\nWaiting for couple of seconds to verify that the carousel is paused..")
     # initializing local WebDriverWait with a specific timeout
     from selenium.webdriver.support.wait import WebDriverWait
-    wait = WebDriverWait(context.driver, 7)
+    wait = WebDriverWait(context.driver, 6)
     initial_slide_index = get_active_slide_index(context)
     # verifying that the carousel is paused
     try:
         wait.until_not(
-            lambda driver: get_active_slide_index(context) == initial_slide_index,
-            message="❌ Pausing didn't work\n***"
+            lambda driver: get_active_slide_index(context) == initial_slide_index
         )
-        print("❌ The carousel didn't pause\n***")
+        print("❌ Pausing didn't work\n***")
     except TimeoutException:
         # if the exception is raised, it means the slide did not change within the timeout, indicating success
         print("✅ Carousel has been successfully paused\n***")
+
+
+@step('Verify resume button is working and it resumes automatic slide scrolling')
+def resume_button_validation(context):
+    try:
+        resume_btn = context.driver.find_element(By.XPATH, "//button[@aria-label='Play Banner Carousel']")
+        context.driver.execute_script("arguments[0].click();", resume_btn)
+        print("✅ Clicked the resume button")
+        wait_and_check_transition(context)
+    except Exception as e:
+        print("\033[91m ❌ An error occurred:\033[0m", e, "\n***")
+    # initializing local WebDriverWait with a specific timeout
+    from selenium.webdriver.support.wait import WebDriverWait
+    wait = WebDriverWait(context.driver, 6)
+    initial_slide_index = get_active_slide_index(context)
+    # waiting until the slide index changes, indicating a successful transition
+    try:
+        wait.until(
+            lambda driver: get_active_slide_index(context) != initial_slide_index
+        )
+        new_slide_index = get_active_slide_index(context)
+        print(f"✅ Carousel is resumed and moved to slide № {new_slide_index + 1}\n***")
+    except TimeoutException:
+        print("❌ Carousel did not resume automatic sliding as expected\n***")
