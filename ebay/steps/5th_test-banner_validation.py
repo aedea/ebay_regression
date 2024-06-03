@@ -61,24 +61,25 @@ def auto_banner_spin(context):
         wait_and_check_transition(context)
     except Exception as e:
         print("\033[91m ❌ An error occurred:\033[0m", e, "\n***")
-    print("✅ Banner is spinning\n***")
+    print("✅ Carousel is spinning by default\n***")
 
 
 @step('Validate {number_of_spins} banner transitions')
 def banner_spin_validation(context, number_of_spins):
-    for _ in range(int(number_of_spins)-1):  # -1 due to initial successful transition from previous step
+    print(f"🛈 Validating {number_of_spins} more transitions..")
+    for _ in range(int(number_of_spins)):  # -1 due to initial successful transition from previous step
         try:
             wait_and_check_transition(context)
         except Exception as e:
             print("\033[91m ❌ An error occurred:\033[0m", e, "\n***")
-    print(f"✅ Banner has successfully made {context.successful_transitions} transitions\n***")
+    print(f"✅ Banner has successfully made {context.successful_transitions-1} transitions\n***")
 
 
 @step('Verify pause button is working and it pauses automatic slide scrolling')
 def pause_button_validation(context):
     pause_btn = context.driver.find_element(By.XPATH, "//button[@aria-label='Pause Banner Carousel']")
     context.driver.execute_script("arguments[0].click();", pause_btn)
-    print("✅ Clicked the pause button\nWaiting for couple of seconds to verify that the carousel is paused..")
+    print("✅ Clicked the pause button\n🛈 Waiting for a couple of seconds to verify that the carousel is paused..")
     # initializing local WebDriverWait with a specific timeout
     from selenium.webdriver.support.wait import WebDriverWait
     wait = WebDriverWait(context.driver, 6)
@@ -113,9 +114,9 @@ def resume_button_validation(context):
             lambda driver: get_active_slide_index(context) != initial_slide_index
         )
         new_slide_index = get_active_slide_index(context)
-        print(f"✅ Carousel is resumed and moved to slide № {new_slide_index + 1}\n***")
+        print(f"✅ Carousel is resumed and automatically moved to slide № {new_slide_index + 1}\n***")
     except TimeoutException:
-        print("❌ Carousel did not resume automatic sliding as expected\n***")
+        print("❌ Carousel didn't resume automatic sliding as expected\n***")
 
 
 @step('Verify forward button is working and switching to the next slide')
@@ -126,5 +127,19 @@ def forward_button_switching(context):
         context.driver.execute_script("arguments[0].click();", forward_btn)
         print("✅ Clicked the forward button")
         wait_and_check_transition(context)
+        print("✅ Forward button is working\n***")
+    except Exception as e:
+        print("\033[91m ❌ An error occurred:\033[0m", e, "\n***")
+
+
+@step('Verify previous button is working and switching to the previous slide')
+def previous_button_switching(context):
+    try:
+        sleep(1)  # using implicit wait due to carousel transition animations
+        backward_btn = context.driver.find_element(By.XPATH, "//button[@aria-label='Go to previous banner']")
+        context.driver.execute_script("arguments[0].click();", backward_btn)
+        print("✅ Clicked the backward button")
+        wait_and_check_transition(context)
+        print("✅ Backward button is working\n***")
     except Exception as e:
         print("\033[91m ❌ An error occurred:\033[0m", e, "\n***")
