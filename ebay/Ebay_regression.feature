@@ -3,6 +3,15 @@ Feature: eBay regression
   Background:
     Given Go to "ebay.com"
 
+# 6TH TEST - EXTENDED FILTER VALIDATION
+  Scenario: Extended validation after applying filters
+    Then  Enter "dress" into the searchbar
+    And   Click on "Search" button
+    # if there's no subsection, type "NONE"
+    Then  Filter by "Color", choose subsection "NONE" and select "Red"
+    And   Validate that all "dress" items {key_name} are {expected_value}
+
+
 # 5TH TEST - BANNER VALIDATION
   Scenario: Banner validation
     Then  Make sure the banner is visible
@@ -35,7 +44,7 @@ Feature: eBay regression
 #    And   Verify All Categories dropped down
 
 # 3RD TEST - FILTER VALIDATION
-  Scenario: Filter validation
+  Scenario: Filter validation by title
     Then  Enter "dress" into the searchbar
     And   Click on "Search" button
     # if there's no subsection, type "NONE"
