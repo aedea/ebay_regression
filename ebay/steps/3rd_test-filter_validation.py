@@ -4,10 +4,14 @@
 from behave import step
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
+import warnings
 
 
 @step('Filter by "{section}", choose subsection "{subsection}" and select "{filter_value}"')
 def filter_by_value(context, section, subsection, filter_value):
+    context.filter_section = section
+    context.filter_subsection = subsection
+    context.filter_value = filter_value
     filter_section = context.driver.find_element(By.XPATH, f"//li[@class = 'x-refine__main__list ']"
                                                            f"[.//div[text() = '{section}']]")
     if filter_section.get_attribute("aria-expanded") == "false":
