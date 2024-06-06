@@ -8,18 +8,18 @@ Feature: eBay regression
     Then  Enter "dress" into the searchbar
     And   Click on "Search" button
     # if there's no subsection, type "NONE"
-    Then  Filter by "Color", choose subsection "NONE" and select "Red"
-    And   Validate that all "dress" items {key_name} are {expected_value}
+    Then  Filter by "Dress Length", choose subsection "NONE" and select "Short"
+    And   Validate that all items are relevant to the applied filter
 
 
 # 5TH TEST - BANNER VALIDATION
   Scenario: Banner validation
     Then  Make sure the banner is visible
     And   Validate the banner is spinning by default
-    Then  Verify forward button is working and switching to the next slide
+    Then  Verify next button is working and switching to the next slide
     Then  Verify previous button is working and switching to the previous slide
     Then  Verify pause button is working and it pauses automatic slide scrolling
-    Then  Verify resume button is working and it resumes automatic slide scrolling
+    Then  Verify play button is working and it resumes automatic slide scrolling
     Then  Validate 3 banner transitions
 
 
