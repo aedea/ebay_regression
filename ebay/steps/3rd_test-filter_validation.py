@@ -44,7 +44,7 @@ def validate_titles(context, initial_page, desired_title):
         item_count += 1
         print(item_count, title)
         if desired_title.lower() not in title.lower():
-            context.issues.append(f'{title} is not "{desired_title}" related')
+            context.issues.append(f'{title}')
             context.number_of_issues += 1
 
 
@@ -73,7 +73,10 @@ def check_all_item_titles(context, initial_page, desired_page, desired_title):
                 initial_page -= 1
     validate_titles(context, initial_page, desired_title)
     if context.issues:
-        raise Exception(f'Following {context.number_of_issues} issues discovered:\n{"\n".join(context.issues)}')
+        raise Exception(f'\n❌ {context.number_of_issues} issues found:\n'
+                        f'Following product titles are not related to "{desired_title}":\n{"\n".join(context.issues)}')
+    else:
+        print(f"***\n✅ All titles are related to '{desired_title}'\n***")
 
 
 @step('Go to page #{search_page}')
