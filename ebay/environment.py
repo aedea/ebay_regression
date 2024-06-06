@@ -22,7 +22,7 @@ def after_step(context, step):
         if not os.path.exists(screenshots_dir):
             os.makedirs(screenshots_dir)
         context.driver.save_screenshot(os.path.join(screenshots_dir, f"{step_name}.png"))
-        print(f"***\n📷 Screenshot saved: {step_name}", end='')
+        print(f"📷 Screenshot saved: {step_name}", end='')
 
 
 def after_all(context):

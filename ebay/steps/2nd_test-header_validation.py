@@ -12,7 +12,7 @@ def compare_urls(context, page, expected_url):
     # ! enter name of the page & expected url to assert if current url is the expected one
     actual_url = context.driver.current_url
     assert expected_url in actual_url, \
-        f"\nExpected URL to contain '{expected_url}', but got '{actual_url}'"
+        f"\nExpected URL to contain '{expected_url}'\nActual URL: '{actual_url}'"
     print("✅", page, "page has successfully opened\n***")
     # try:
     #     # context.wait.until(lambda driver: expected_url in driver.current_url)
